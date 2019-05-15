@@ -1,6 +1,5 @@
 package com.practice.moviedb.viewmodels.factories;
 
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;

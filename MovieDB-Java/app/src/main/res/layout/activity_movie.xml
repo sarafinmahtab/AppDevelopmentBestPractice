@@ -6,15 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <data>
+
         <variable
-            name="topRatedMovieModel"
-            type="com.practice.moviedb.viewmodels.TopRatedMovieViewModel" />
+            name="movieViewModel"
+            type="com.practice.moviedb.viewmodels.MovieViewModel" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.MainActivity">
+        tools:context=".activities.MovieActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -31,9 +33,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <include
-            android:id="@+id/contain_main"
-            layout="@layout/content_main"
-            bind:topRatedMovieModel="@{topRatedMovieModel}"/>
+            android:id="@+id/content_movie"
+            layout="@layout/content_movie"
+            bind:movieViewModel="@{movieViewModel}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -1,6 +1,7 @@
 package com.practice.moviedb.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.practice.moviedb.R;
+import com.practice.moviedb.activities.MovieActivity;
 import com.practice.moviedb.models.Result;
 import com.practice.moviedb.models.TopRatedMovie;
 
@@ -41,7 +44,20 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         final Result result = movieList.get(position);
 
         holder.movieTitleTextView.setText(result.getTitle());
-        holder.releasedDateTextView.setText(result.getReleaseDate());
+        holder.releasedDateTextView.setText(String.format("Released Date : %s", result.getReleaseDate()));
+
+        Glide.with(context)
+                .load("https://image.tmdb.org/t/p/w600_and_h900_bestv2" + result.getPosterPath())
+                .placeholder(R.drawable.ic_movie_poster)
+                .into(holder.moviePosterImageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MovieActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

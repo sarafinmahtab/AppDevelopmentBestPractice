@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <data>
+
+        <variable
+            name="movieViewModel"
+            type="com.practice.moviedb.viewmodels.MovieViewModel" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activities.MovieActivity"
+            tools:showIn="@layout/activity_movie">
+
+            <ImageView
+                android:id="@+id/poster_view"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_movie_poster"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/movie_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Dilwale Dulhania Le Jayenge"
+                android:textColor="#242323"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/poster_view"
+                app:layout_constraintHorizontal_bias="0.507"
+                app:layout_constraintStart_toStartOf="@+id/poster_view"
+                app:layout_constraintTop_toBottomOf="@+id/poster_view" />
+
+            <TextView
+                android:id="@+id/movie_released"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Released : 14 May, 2019"
+                android:textColor="#746464"
+                app:layout_constraintEnd_toEndOf="@+id/movie_title"
+                app:layout_constraintStart_toStartOf="@+id/movie_title"
+                app:layout_constraintTop_toBottomOf="@+id/movie_title" />
+
+            <View
+                android:id="@+id/first_line"
+                android:layout_width="220dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="@+id/movie_released"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/movie_released"
+                app:layout_constraintTop_toBottomOf="@+id/movie_released" />
+
+            <TextView
+                android:id="@+id/average_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="8.2"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/first_line"
+                app:layout_constraintStart_toStartOf="@+id/first_line"
+                app:layout_constraintTop_toBottomOf="@+id/first_line" />
+
+            <TextView
+                android:id="@+id/rating_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Average Vote"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/average_vote"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/average_vote"
+                app:layout_constraintTop_toBottomOf="@+id/average_vote" />
+
+            <View
+                android:id="@+id/second_line"
+                android:layout_width="220dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="@+id/rating_name"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/rating_name"
+                app:layout_constraintTop_toBottomOf="@+id/rating_name" />
+
+            <TextView
+                android:id="@+id/overview_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Overview"
+                android:textColor="#242323"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/second_line"
+                app:layout_constraintStart_toStartOf="@+id/second_line"
+                app:layout_constraintTop_toBottomOf="@+id/second_line" />
+
+            <TextView
+                android:id="@+id/overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
+                android:gravity="center"
+                android:text="The true story of Henry Hill, a half-Irish, half-Sicilian Brooklyn kid who is adopted by neighbourhood gangsters at an early age and climbs the ranks of a Mafia family under the guidance of Jimmy Conway."
+                app:layout_constraintEnd_toEndOf="@+id/overview_header"
+                app:layout_constraintStart_toStartOf="@+id/overview_header"
+                app:layout_constraintTop_toBottomOf="@+id/overview_header" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

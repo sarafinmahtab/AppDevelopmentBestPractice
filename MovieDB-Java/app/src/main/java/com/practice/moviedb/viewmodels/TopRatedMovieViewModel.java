@@ -20,7 +20,7 @@ public class TopRatedMovieViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public void requestTopRatedMovie(String apiKey, String language, String page, String sortedBy) {
+    public void initTopRatedMovieFromRepo(String apiKey, String language, String page, String sortedBy) {
         if (topRatedMovieLiveData != null) {
             // ViewModel is created on a per-Fragment basis, so the userId
             // doesn't change.

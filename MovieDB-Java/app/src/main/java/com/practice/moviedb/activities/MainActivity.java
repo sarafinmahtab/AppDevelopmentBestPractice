@@ -1,7 +1,8 @@
-package com.practice.moviedb;
+package com.practice.moviedb.activities;
 
 import android.os.Bundle;
 
+import com.practice.moviedb.R;
 import com.practice.moviedb.adapters.MovieListAdapter;
 import com.practice.moviedb.databinding.ActivityMainBinding;
 import com.practice.moviedb.models.TopRatedMovie;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,12 +33,16 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieListAdapter adapter;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setSupportActionBar(binding.toolbar);
+
+        progressBar = findViewById(R.id.progress_bar);
 
         initViewModel();
         initRecyclerView();
@@ -44,15 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewModel() {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         TopRatedMovieRepository repository = new TopRatedMovieRepository(apiService);
 
         viewModel = ViewModelProviders.of(this, new TopRatedMovieVMFactory(repository))
                 .get(TopRatedMovieViewModel.class);
 
-        viewModel.requestTopRatedMovie(
-                "6371db70ffc8e719f981e307e397452e", "en-US",
-                "1", "vote_average.asc");
+        viewModel.initTopRatedMovieFromRepo(
+                "6371db70ffc8e719f981e307e397452e",
+                "en-US",
+                "1",
+                "vote_average.asc");
 
         binding.setTopRatedMovieModel(viewModel);
     }
@@ -61,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getTopRatedMovieLiveData().observe(this, new Observer<TopRatedMovie>() {
             @Override
             public void onChanged(TopRatedMovie topRatedMovie) {
+
+                progressBar.setVisibility(View.GONE);
+
                 updateRecyclerView(topRatedMovie);
             }
         });
@@ -69,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateRecyclerView(TopRatedMovie topRatedMovie) {
         if (topRatedMovie != null) {
             adapter.setTopRatedMovie(topRatedMovie);
-//            adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 

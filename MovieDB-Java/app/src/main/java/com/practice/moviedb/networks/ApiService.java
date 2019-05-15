@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @GET("current.json")
+    @GET("top_rated")
     Call<TopRatedMovie> getTopRatedMovies(@Query("api_key") String apiKey,
                                           @Query("language") String language,
                                           @Query("page") String page,

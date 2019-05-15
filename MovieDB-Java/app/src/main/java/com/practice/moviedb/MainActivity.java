@@ -4,12 +4,16 @@ import android.os.Bundle;
 
 import com.practice.moviedb.adapters.MovieListAdapter;
 import com.practice.moviedb.databinding.ActivityMainBinding;
-import com.practice.moviedb.models.Result;
+import com.practice.moviedb.models.TopRatedMovie;
+import com.practice.moviedb.networks.ApiClient;
+import com.practice.moviedb.networks.ApiService;
+import com.practice.moviedb.repositories.TopRateMovieRepository;
 import com.practice.moviedb.viewmodels.TopRatedMovieViewModel;
+import com.practice.moviedb.viewmodels.factories.TopRatedMovieVMFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieListAdapter adapter;
 
-    private List<Result> movieList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,16 +37,45 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setSupportActionBar(binding.toolbar);
 
-        viewModel = ViewModelProviders.of(this).get(TopRatedMovieViewModel.class);
-        binding.setTopRatedMovieModel(viewModel);
-
+        initViewModel();
         initRecyclerView();
+        dataObserver();
+    }
+
+    private void initViewModel() {
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        TopRateMovieRepository repository = new TopRateMovieRepository(apiService);
+
+        viewModel = ViewModelProviders.of(this, new TopRatedMovieVMFactory(repository))
+                .get(TopRatedMovieViewModel.class);
+
+        viewModel.initTopRatedMovieFromRepo(
+                "6371db70ffc8e719f981e307e397452e",
+                "en-US",
+                "1",
+                "vote_average.asc");
+
+        binding.setTopRatedMovieModel(viewModel);
+    }
+
+    private void dataObserver() {
+        viewModel.getTopRatedMovieLiveData().observe(this, new Observer<TopRatedMovie>() {
+            @Override
+            public void onChanged(TopRatedMovie topRatedMovie) {
+                updateRecyclerView(topRatedMovie);
+            }
+        });
+    }
+
+    private void updateRecyclerView(TopRatedMovie topRatedMovie) {
+        if (topRatedMovie != null) {
+            adapter.setTopRatedMovie(topRatedMovie);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void initRecyclerView() {
-
-        // Call Loader
-
 
         // Initializing with blank list
 
@@ -53,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         binding.containMain.movieList.setLayoutManager(layoutManager);
 
         adapter = new MovieListAdapter(this);
-        adapter.setMovieList(movieList);
+        adapter.setTopRatedMovie(new TopRatedMovie());
         binding.containMain.movieList.setAdapter(adapter);
     }
 

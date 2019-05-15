@@ -36,6 +36,9 @@ public class TopRateMovieRepository {
         call.enqueue(new Callback<TopRatedMovie>() {
             @Override
             public void onResponse(@NonNull Call<TopRatedMovie> call, @NonNull Response<TopRatedMovie> response) {
+
+                Log.d("Response", response.toString());
+
                 TopRatedMovie movie = response.body();
                 data.setValue(movie);
             }

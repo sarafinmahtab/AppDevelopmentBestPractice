@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.practice.moviedb.R;
 import com.practice.moviedb.models.Result;
+import com.practice.moviedb.models.TopRatedMovie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder> {
 
     private Context context;
+    private TopRatedMovie topRatedMovie;
     private List<Result> movieList;
 
     public MovieListAdapter(Context context) {
@@ -63,7 +66,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         }
     }
 
-    public void setMovieList(List<Result> movieList) {
-        this.movieList = movieList;
+    public void setTopRatedMovie(TopRatedMovie topRatedMovie) {
+        this.topRatedMovie = topRatedMovie;
+
+        if (topRatedMovie.getResults() == null) {
+            this.movieList = new ArrayList<>();
+        } else {
+            this.movieList = topRatedMovie.getResults();
+        }
     }
 }

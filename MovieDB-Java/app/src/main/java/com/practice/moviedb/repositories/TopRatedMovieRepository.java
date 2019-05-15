@@ -18,12 +18,12 @@ import retrofit2.Response;
 
 // Informs Dagger that this class should be constructed only once.
 @Singleton
-public class TopRateMovieRepository {
+public class TopRatedMovieRepository {
 
     private ApiService apiService;
 
     @Inject
-    public TopRateMovieRepository(ApiService apiService) {
+    public TopRatedMovieRepository(ApiService apiService) {
         this.apiService = apiService;
     }
 
@@ -37,7 +37,7 @@ public class TopRateMovieRepository {
             @Override
             public void onResponse(@NonNull Call<TopRatedMovie> call, @NonNull Response<TopRatedMovie> response) {
 
-                Log.d("Response", response.toString());
+                Log.d("RetrofitResponse", response.toString());
 
                 TopRatedMovie movie = response.body();
                 data.setValue(movie);

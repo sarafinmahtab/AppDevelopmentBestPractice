@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.practice.moviedb.models.TopRatedMovie;
-import com.practice.moviedb.repositories.TopRateMovieRepository;
+import com.practice.moviedb.repositories.TopRatedMovieRepository;
 
 import javax.inject.Inject;
 
@@ -12,15 +12,15 @@ public class TopRatedMovieViewModel extends ViewModel {
 
     private LiveData<TopRatedMovie> topRatedMovieLiveData;
 
-    private TopRateMovieRepository repository;
+    private TopRatedMovieRepository repository;
 
     // Instructs Dagger 2 to provide the UserRepository parameter.
     @Inject
-    public TopRatedMovieViewModel(TopRateMovieRepository repository) {
+    public TopRatedMovieViewModel(TopRatedMovieRepository repository) {
         this.repository = repository;
     }
 
-    public void initTopRatedMovieFromRepo(String apiKey, String language, String page, String sortedBy) {
+    public void requestTopRatedMovie(String apiKey, String language, String page, String sortedBy) {
         if (topRatedMovieLiveData != null) {
             // ViewModel is created on a per-Fragment basis, so the userId
             // doesn't change.

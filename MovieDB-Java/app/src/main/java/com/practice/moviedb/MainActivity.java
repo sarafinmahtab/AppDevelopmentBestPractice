@@ -7,7 +7,7 @@ import com.practice.moviedb.databinding.ActivityMainBinding;
 import com.practice.moviedb.models.TopRatedMovie;
 import com.practice.moviedb.networks.ApiClient;
 import com.practice.moviedb.networks.ApiService;
-import com.practice.moviedb.repositories.TopRateMovieRepository;
+import com.practice.moviedb.repositories.TopRatedMovieRepository;
 import com.practice.moviedb.viewmodels.TopRatedMovieViewModel;
 import com.practice.moviedb.viewmodels.factories.TopRatedMovieVMFactory;
 
@@ -45,16 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        TopRateMovieRepository repository = new TopRateMovieRepository(apiService);
+        TopRatedMovieRepository repository = new TopRatedMovieRepository(apiService);
 
         viewModel = ViewModelProviders.of(this, new TopRatedMovieVMFactory(repository))
                 .get(TopRatedMovieViewModel.class);
 
-        viewModel.initTopRatedMovieFromRepo(
-                "6371db70ffc8e719f981e307e397452e",
-                "en-US",
-                "1",
-                "vote_average.asc");
+        viewModel.requestTopRatedMovie(
+                "6371db70ffc8e719f981e307e397452e", "en-US",
+                "1", "vote_average.asc");
 
         binding.setTopRatedMovieModel(viewModel);
     }
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateRecyclerView(TopRatedMovie topRatedMovie) {
         if (topRatedMovie != null) {
             adapter.setTopRatedMovie(topRatedMovie);
-            adapter.notifyDataSetChanged();
+//            adapter.notifyDataSetChanged();
         }
     }
 

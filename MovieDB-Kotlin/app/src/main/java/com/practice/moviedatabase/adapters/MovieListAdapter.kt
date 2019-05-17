@@ -44,7 +44,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Movi
             intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
             intent.putExtra("title", result.title)
             intent.putExtra("release_date", result.releaseDate)
-            intent.putExtra("vote_average", result.voteAverage)
+            intent.putExtra("vote_average", result.voteAverage.toString())
             intent.putExtra("overview", result.overview)
             context.startActivity(intent)
         }

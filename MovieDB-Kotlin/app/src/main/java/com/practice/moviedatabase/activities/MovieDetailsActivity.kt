@@ -33,4 +33,9 @@ class MovieDetailsActivity : AppCompatActivity() {
         averageVoteTextView.text = intent.getStringExtra("vote_average")
         overviewTextView.text = intent.getStringExtra("overview")
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 }

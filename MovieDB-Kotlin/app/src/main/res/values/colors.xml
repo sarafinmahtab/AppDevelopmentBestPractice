@@ -5,4 +5,5 @@
     <color name="colorAccent">#474546</color>
 
     <color name="lineColor">#F44336</color>
+    <color name="evenItemBackgroundColor">#BCECEAEA</color>
 </resources>

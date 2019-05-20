@@ -38,8 +38,9 @@
                     android:id="@+id/movieTitleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dilwale Dulhania Le Jayenge"
+                    android:text="The Lord of the Rings: The return of the King"
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:textColor="#242323" />
 
             <TextView
@@ -49,9 +50,9 @@
                     android:text="Released : 14 May, 2019"
                     android:textColor="#746464" />
 
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
-

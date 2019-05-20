@@ -14,47 +14,104 @@ import com.practice.moviedatabase.Urls
 import com.practice.moviedatabase.activities.MovieDetailsActivity
 import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.TopRatedMovie
+import java.text.SimpleDateFormat
+import java.util.*
 
-import java.util.ArrayList
+class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
+    private val movieOddItem: Int = 0
+    private val movieEvenItem: Int = 1
+
     private var topRatedMovie: TopRatedMovie? = null
     private var movieList: List<Result>? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListViewHolder {
+    private val inputDateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val outputDateFormat: SimpleDateFormat = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
 
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_movie_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return MovieListViewHolder(view)
+        val oddView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_odd, parent, false)
+        val evenView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_even, parent, false)
+
+        return when (viewType) {
+            movieOddItem -> MovieOddListViewHolder(oddView)
+            else -> MovieEvenListViewHolder(evenView)
+        }
     }
 
-    override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
-        val result = movieList!![position]
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        holder.movieTitleTextView.text = result.title
-        holder.releasedDateTextView.text = String.format("Released : %s", result.releaseDate)
+        if (holder.itemViewType == movieOddItem) {
 
-        Glide.with(context)
-            .load(Urls.BASE_IMAGE_URL + result.posterPath)
-            .placeholder(R.drawable.ic_movie_poster)
-            .into(holder.moviePosterImageView)
+            val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
 
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, MovieDetailsActivity::class.java)
-            intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
-            intent.putExtra("title", result.title)
-            intent.putExtra("release_date", result.releaseDate)
-            intent.putExtra("vote_average", result.voteAverage.toString())
-            intent.putExtra("overview", result.overview)
-            context.startActivity(intent)
+            val result = movieList!![position]
+            val formattedDate = inputDateFormat.parse(result.releaseDate)
+            val outputDate = outputDateFormat.format(formattedDate)
+
+            oddViewHolder.movieTitleTextView.text = result.title
+            oddViewHolder.releasedDateTextView.text = String.format("Released : %s", outputDate)
+
+            Glide.with(context)
+                .load(Urls.BASE_IMAGE_URL + result.posterPath)
+                .placeholder(R.drawable.ic_movie_poster)
+                .into(oddViewHolder.moviePosterImageView)
+
+            oddViewHolder.itemView.setOnClickListener {
+                val intent = Intent(context, MovieDetailsActivity::class.java)
+                intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
+                intent.putExtra("title", result.title)
+                intent.putExtra("release_date", outputDate)
+                intent.putExtra("vote_average", result.voteAverage.toString())
+                intent.putExtra("overview", result.overview)
+                context.startActivity(intent)
+            }
+
+        } else {
+
+            val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
+
+            val result = movieList!![position]
+            val formattedDate = inputDateFormat.parse(result.releaseDate)
+            val outputDate = outputDateFormat.format(formattedDate)
+
+            evenViewHolder.movieTitleTextView.text = result.title
+            evenViewHolder.releasedDateTextView.text = String.format("Released : %s", outputDate)
+
+            Glide.with(context)
+                .load(Urls.BASE_IMAGE_URL + result.posterPath)
+                .placeholder(R.drawable.ic_movie_poster)
+                .into(evenViewHolder.moviePosterImageView)
+
+            evenViewHolder.itemView.setOnClickListener {
+                val intent = Intent(context, MovieDetailsActivity::class.java)
+                intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
+                intent.putExtra("title", result.title)
+                intent.putExtra("release_date", outputDate)
+                intent.putExtra("vote_average", result.voteAverage.toString())
+                intent.putExtra("overview", result.overview)
+                context.startActivity(intent)
+            }
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position.and(1) == 1) movieOddItem else movieEvenItem
     }
 
     override fun getItemCount(): Int {
         return movieList!!.size
     }
 
-    inner class MovieListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
+
+        val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
+        val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
+    }
+
+    inner class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
 

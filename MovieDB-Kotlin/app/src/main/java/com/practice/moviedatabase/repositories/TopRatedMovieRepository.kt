@@ -6,14 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.networks.ApiService
 import retrofit2.Call
-import javax.inject.Inject
-import javax.inject.Singleton
 import retrofit2.Callback
 import retrofit2.Response
 
 // Informs Dagger that this class should be constructed only once.
-@Singleton
-class TopRatedMovieRepository @Inject constructor(private var apiService: ApiService?) {
+class TopRatedMovieRepository constructor(private var apiService: ApiService?) {
 
     fun callTopRatedMoviesApi(apiKey: String, language: String, page: String, sortedBy: String) : LiveData<TopRatedMovie> {
 

@@ -1,7 +1,7 @@
 package com.practice.moviedatabase.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dataObserver() {
-        viewModel.topRateMovieLiveData.observe(this, Observer {
+        viewModel.topRateMovieLiveData?.observe(this, Observer {
             if (it != null) {
                 progressBar.visibility = View.GONE
                 adapter.setTopRatedMovie(it)

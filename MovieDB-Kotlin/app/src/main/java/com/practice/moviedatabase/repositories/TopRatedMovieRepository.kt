@@ -1,37 +1,48 @@
 package com.practice.moviedatabase.repositories
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.practice.moviedatabase.base.AppDispatcher
 import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.networks.ApiService
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 // Informs Dagger that this class should be constructed only once.
 class TopRatedMovieRepository constructor(private var apiService: ApiService?) {
 
-    fun callTopRatedMoviesApi(apiKey: String, language: String, page: String, sortedBy: String) : LiveData<TopRatedMovie> {
+    suspend fun callTopRatedMoviesApi(apiKey: String, language: String, page: String, sortedBy: String) : TopRatedMovie?
+            = withContext(AppDispatcher.io) {
+        return@withContext getMovies(apiKey, language, page, sortedBy)
+    }
 
-        val data = MutableLiveData<TopRatedMovie>()
-        val call = apiService?.getTopRatedMovies(apiKey, language, page, sortedBy)
+    private suspend fun getMovies(
+        apiKey: String, language: String,
+        page: String, sortedBy: String): TopRatedMovie? {
 
-        call?.enqueue(object : Callback<TopRatedMovie> {
+        return suspendCoroutine {
 
-            override fun onFailure(call: Call<TopRatedMovie>, t: Throwable) {
+            val call = apiService?.getTopRatedMovies(apiKey, language, page, sortedBy)
 
-                Log.d("RetrofitResponse", t.message)
-            }
+            call?.enqueue(object : Callback<TopRatedMovie> {
 
-            override fun onResponse(call: Call<TopRatedMovie>, response: Response<TopRatedMovie>) {
+                override fun onFailure(call: Call<TopRatedMovie>, t: Throwable) {
 
-                Log.d("RetrofitResponse", response.body().toString())
+                    Log.d("RetrofitFailure", t.message)
+                    it.resumeWithException(t)
+                }
 
-                data.value = response.body()
-            }
-        })
+                override fun onResponse(call: Call<TopRatedMovie>, response: Response<TopRatedMovie>) {
 
-        return data
+                    Log.d("RetrofitResponse", response.body().toString())
+
+                    it.resume(response.body())
+                }
+            })
+        }
     }
 }

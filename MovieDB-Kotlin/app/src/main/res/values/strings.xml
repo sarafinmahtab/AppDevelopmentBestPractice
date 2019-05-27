@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Movie DB</string>
+
     <string name="action_settings">Settings</string>
     <string name="title_activity_movie">Movie Description</string>
+
+    <string name="api_key">6371db70ffc8e719f981e307e397452e</string>
+    <string name="language">en-US</string>
+    <string name="default_page">1</string>
+    <string name="sorted_by">vote_average.asc</string>
 </resources>

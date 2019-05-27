@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dataObserver() {
-        viewModel.topRateMovieLiveData?.observe(this, Observer {
+        viewModel.topRateMovieLiveData.observe(this, Observer {
             if (it != null) {
                 progressBar.visibility = View.GONE
                 adapter.setTopRatedMovie(it)
@@ -65,8 +65,8 @@ class MainActivity : AppCompatActivity() {
             .get(TopRatedMovieViewModel::class.java)
 
         viewModel.requestTopRatedMoviesApi(
-            "6371db70ffc8e719f981e307e397452e", "en-US",
-            "1", "vote_average.asc")
+            getString(R.string.api_key), getString(R.string.language),
+            getString(R.string.default_page), getString(R.string.sorted_by))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

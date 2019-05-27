@@ -8,4 +8,5 @@
     <string name="language">en-US</string>
     <string name="default_page">1</string>
     <string name="sorted_by">vote_average.asc</string>
+    <string name="details_view">Details View</string>
 </resources>

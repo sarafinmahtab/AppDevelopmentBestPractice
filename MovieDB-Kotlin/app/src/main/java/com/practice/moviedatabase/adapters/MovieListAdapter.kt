@@ -28,6 +28,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     private val inputDateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val outputDateFormat: SimpleDateFormat = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
 
+    var checked = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val oddView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_odd, parent, false)
@@ -58,13 +60,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 .into(oddViewHolder.moviePosterImageView)
 
             oddViewHolder.itemView.setOnClickListener {
-                val intent = Intent(context, MovieDetailsActivity::class.java)
-                intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
-                intent.putExtra("title", result.title)
-                intent.putExtra("release_date", outputDate)
-                intent.putExtra("vote_average", result.voteAverage.toString())
-                intent.putExtra("overview", result.overview)
-                context.startActivity(intent)
+                startNextActivity(result, outputDate)
             }
 
         } else {
@@ -84,15 +80,20 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 .into(evenViewHolder.moviePosterImageView)
 
             evenViewHolder.itemView.setOnClickListener {
-                val intent = Intent(context, MovieDetailsActivity::class.java)
-                intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
-                intent.putExtra("title", result.title)
-                intent.putExtra("release_date", outputDate)
-                intent.putExtra("vote_average", result.voteAverage.toString())
-                intent.putExtra("overview", result.overview)
-                context.startActivity(intent)
+                startNextActivity(result, outputDate)
             }
         }
+    }
+
+    private fun startNextActivity(result: Result, outputDate: String?) {
+        val intent = Intent(context, MovieDetailsActivity::class.java)
+        intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
+        intent.putExtra("title", result.title)
+        intent.putExtra("release_date", outputDate)
+        intent.putExtra("vote_average", result.voteAverage.toString())
+        intent.putExtra("overview", result.overview)
+        intent.putExtra("checked", checked)
+        context.startActivity(intent)
     }
 
     override fun getItemViewType(position: Int): Int {

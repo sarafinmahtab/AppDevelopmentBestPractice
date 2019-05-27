@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         initViewModel()
-        initRecyclerView()
+        initViews()
         dataObserver()
     }
 
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun initRecyclerView() {
+    private fun initViews() {
 
         adapter = MovieListAdapter(this)
         adapter.setTopRatedMovie(TopRatedMovie())
@@ -54,6 +54,13 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.layoutManager = layoutManager
         movieListRecyclerView.adapter = adapter
+
+        detailsViewSwitch.isChecked = false
+        adapter.checked = false
+
+        detailsViewSwitch.setOnCheckedChangeListener { _, isChecked ->
+            adapter.checked = isChecked
+        }
     }
 
     private fun initViewModel() {

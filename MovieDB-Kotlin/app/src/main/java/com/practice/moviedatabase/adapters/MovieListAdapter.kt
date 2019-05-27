@@ -79,6 +79,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 .placeholder(R.drawable.ic_movie_poster)
                 .into(evenViewHolder.moviePosterImageView)
 
+            // Must be shift to Controller
             evenViewHolder.itemView.setOnClickListener {
                 startNextActivity(result, outputDate)
             }
@@ -104,22 +105,6 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         return movieList!!.size
     }
 
-    inner class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
-
-        val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
-        val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
-    }
-
-    inner class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
-
-        val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
-        val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
-    }
-
     fun setTopRatedMovie(topRatedMovie: TopRatedMovie) {
         this.topRatedMovie = topRatedMovie
 
@@ -129,4 +114,20 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             this.movieList = topRatedMovie.results
         }
     }
+}
+
+class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
+
+    val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
+    val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
+}
+
+class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
+
+    val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
+    val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
 }

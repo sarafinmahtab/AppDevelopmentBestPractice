@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.adapters.MovieListAdapter
 import com.practice.moviedatabase.models.TopRatedMovie
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiClient
 import com.practice.moviedatabase.networks.ApiService
 import com.practice.moviedatabase.repositories.TopRatedMovieRepository
@@ -64,9 +65,8 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
 
-        viewModel.requestTopRatedMoviesApi(
-            getString(R.string.api_key), getString(R.string.language),
-            getString(R.string.default_page), getString(R.string.sorted_by))
+        viewModel.requestTopRatedMoviesApi(TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
+            getString(R.string.default_page), getString(R.string.sorted_by)))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

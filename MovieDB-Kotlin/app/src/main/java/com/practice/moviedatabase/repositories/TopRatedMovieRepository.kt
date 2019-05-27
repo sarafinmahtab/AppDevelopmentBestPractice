@@ -2,7 +2,9 @@ package com.practice.moviedatabase.repositories
 
 import android.util.Log
 import com.practice.moviedatabase.base.AppDispatcher
+import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.models.TopRatedMovie
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiService
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -12,17 +14,15 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-// Informs Dagger that this class should be constructed only once.
-class TopRatedMovieRepository constructor(private var apiService: ApiService?) {
+class TopRatedMovieRepository constructor(private var apiService: ApiService?) :
+    UseCase<TopRatedMovieParams, TopRatedMovie>() {
 
-    suspend fun callTopRatedMoviesApi(apiKey: String, language: String, page: String, sortedBy: String) : TopRatedMovie?
-            = withContext(AppDispatcher.io) {
-        return@withContext getMovies(apiKey, language, page, sortedBy)
+    override suspend fun execute(parameters: TopRatedMovieParams): TopRatedMovie = withContext(AppDispatcher.io) {
+        return@withContext getMovies(parameters.apiKey!!, parameters.language!!, parameters.page!!, parameters.sortedBy!!)
     }
 
     private suspend fun getMovies(
-        apiKey: String, language: String,
-        page: String, sortedBy: String): TopRatedMovie? {
+        apiKey: String, language: String, page: String, sortedBy: String): TopRatedMovie {
 
         return suspendCoroutine {
 
@@ -39,8 +39,7 @@ class TopRatedMovieRepository constructor(private var apiService: ApiService?) {
                 override fun onResponse(call: Call<TopRatedMovie>, response: Response<TopRatedMovie>) {
 
                     Log.d("RetrofitResponse", response.body().toString())
-
-                    it.resume(response.body())
+                    it.resume(response.body()!!)
                 }
             })
         }

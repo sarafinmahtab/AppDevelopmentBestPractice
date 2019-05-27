@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel
 import com.practice.moviedatabase.models.TopRatedMovie
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.repositories.TopRatedMovieRepository
 import kotlinx.coroutines.launch
 
@@ -11,7 +12,7 @@ class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : 
 
     val topRateMovieLiveData: MutableLiveData<TopRatedMovie> = MutableLiveData()
 
-    fun requestTopRatedMoviesApi(apiKey: String, language: String, page: String, sortedBy: String) {
+    fun requestTopRatedMoviesApi(params: TopRatedMovieParams) {
 
         uiScope.launch {
 
@@ -26,7 +27,7 @@ class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : 
 
             Log.d("ViewModel", "Initializing new TopRatedMovie object")
 
-            val result  = repository.callTopRatedMoviesApi(apiKey, language, page, sortedBy)
+            val result  = repository(params)
             topRateMovieLiveData.value = result
         }
     }

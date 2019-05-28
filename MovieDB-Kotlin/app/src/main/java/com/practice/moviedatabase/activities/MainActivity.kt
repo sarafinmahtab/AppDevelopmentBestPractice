@@ -1,5 +1,6 @@
 package com.practice.moviedatabase.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
@@ -9,7 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
+import com.practice.moviedatabase.Urls
 import com.practice.moviedatabase.adapters.MovieListAdapter
+import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiClient
@@ -21,10 +25,12 @@ import com.practice.moviedatabase.viewmodels.factories.TopRatedViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemClickListener {
 
     private lateinit var viewModel : TopRatedMovieViewModel
-    private lateinit var adapter: MovieListAdapter
+    private lateinit var adapter : MovieListAdapter
+
+    private var checked: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,16 +56,16 @@ class MainActivity : AppCompatActivity() {
 
         adapter = MovieListAdapter(this)
         adapter.setTopRatedMovie(TopRatedMovie())
+        adapter.setItemClickListener(this)
 
         val layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.layoutManager = layoutManager
         movieListRecyclerView.adapter = adapter
 
         detailsViewSwitch.isChecked = false
-        adapter.checked = false
 
         detailsViewSwitch.setOnCheckedChangeListener { _, isChecked ->
-            adapter.checked = isChecked
+            checked = isChecked
         }
     }
 
@@ -74,6 +80,18 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.requestTopRatedMoviesApi(TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
             getString(R.string.default_page), getString(R.string.sorted_by)))
+    }
+
+    override fun onItemClicked(result: Result, outputDate: String?) {
+
+        val intent = Intent(this, MovieDetailsActivity::class.java)
+        intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
+        intent.putExtra("title", result.title)
+        intent.putExtra("release_date", outputDate)
+        intent.putExtra("vote_average", result.voteAverage.toString())
+        intent.putExtra("overview", result.overview)
+        intent.putExtra("checked", checked)
+        startActivity(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,7 +1,6 @@
 package com.practice.moviedatabase.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.Urls
-import com.practice.moviedatabase.activities.MovieDetailsActivity
+import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.TopRatedMovie
 import java.text.SimpleDateFormat
@@ -28,7 +27,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     private val inputDateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val outputDateFormat: SimpleDateFormat = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
 
-    var checked = false
+    private lateinit var listener: ItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -60,7 +59,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 .into(oddViewHolder.moviePosterImageView)
 
             oddViewHolder.itemView.setOnClickListener {
-                startNextActivity(result, outputDate)
+                listener.onItemClicked(result, outputDate)
             }
 
         } else {
@@ -79,22 +78,10 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 .placeholder(R.drawable.ic_movie_poster)
                 .into(evenViewHolder.moviePosterImageView)
 
-            // Must be shift to Controller
             evenViewHolder.itemView.setOnClickListener {
-                startNextActivity(result, outputDate)
+                listener.onItemClicked(result, outputDate)
             }
         }
-    }
-
-    private fun startNextActivity(result: Result, outputDate: String?) {
-        val intent = Intent(context, MovieDetailsActivity::class.java)
-        intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
-        intent.putExtra("title", result.title)
-        intent.putExtra("release_date", outputDate)
-        intent.putExtra("vote_average", result.voteAverage.toString())
-        intent.putExtra("overview", result.overview)
-        intent.putExtra("checked", checked)
-        context.startActivity(intent)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -113,6 +100,10 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         } else {
             this.movieList = topRatedMovie.results
         }
+    }
+
+    fun setItemClickListener(listener: ItemClickListener) {
+        this.listener = listener
     }
 }
 

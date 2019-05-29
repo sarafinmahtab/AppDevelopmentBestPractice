@@ -45,8 +45,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         if (holder.itemViewType == movieOddItem) {
 
             val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
-
             val result = movieList!![position]
+            //TODO: move below codes in view holder
             val formattedDate = inputDateFormat.parse(result.releaseDate)
             val outputDate = outputDateFormat.format(formattedDate)
 
@@ -67,6 +67,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
 
             val result = movieList!![position]
+            //TODO: move below codes in view holder
             val formattedDate = inputDateFormat.parse(result.releaseDate)
             val outputDate = outputDateFormat.format(formattedDate)
 
@@ -107,6 +108,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     }
 }
 
+//TODO: need to move this view holder in a file
 class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)
@@ -115,6 +117,8 @@ class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
 }
 
+
+//TODO: need to move this view holder in a file
 class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val moviePosterImageView: ImageView = itemView.findViewById(R.id.moviePosterImageView)

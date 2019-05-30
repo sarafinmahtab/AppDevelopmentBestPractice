@@ -1,6 +1,5 @@
 package com.practice.moviedatabase.adapters.viewholders
 
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,10 +20,10 @@ class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
     private val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
 
+    private lateinit var listener: ItemClickListener
+
     fun bind(
-        context: Context,
-        result: Result,
-        listener: ItemClickListener
+        result: Result
     ) {
         val formattedDate = inputDateFormat.parse(result.releaseDate)
         val outputDate = outputDateFormat.format(formattedDate)
@@ -32,7 +31,7 @@ class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         movieTitleTextView.text = result.title
         releasedDateTextView.text = String.format("Released : %s", outputDate)
 
-        Glide.with(context)
+        Glide.with(itemView.context)
             .load(AllConstants.BASE_IMAGE_URL + result.posterPath)
             .placeholder(R.drawable.ic_movie_poster)
             .into(moviePosterImageView)
@@ -40,5 +39,11 @@ class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         itemView.setOnClickListener {
             listener.onItemClicked(result, outputDate)
         }
+    }
+
+    fun setItemClickListener(
+        listener: ItemClickListener
+    ) {
+        this.listener = listener
     }
 }

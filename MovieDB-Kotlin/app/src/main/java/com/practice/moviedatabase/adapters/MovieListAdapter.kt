@@ -4,9 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.AllConstants
 import com.practice.moviedatabase.adapters.viewholders.MovieEvenListViewHolder
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Result
@@ -30,8 +28,12 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         val evenView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_even, parent, false)
 
         return when (viewType) {
-            movieOddItem -> MovieOddListViewHolder(oddView)
-            else -> MovieEvenListViewHolder(evenView)
+            movieOddItem -> MovieOddListViewHolder(oddView).apply {
+                setItemClickListener(listener)
+            }
+            else -> MovieEvenListViewHolder(evenView).apply {
+                setItemClickListener(listener)
+            }
         }
     }
 
@@ -42,13 +44,13 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
             val result = movieList!![position]
 
-            oddViewHolder.bind(context, result, listener)
+            oddViewHolder.bind(result)
         } else {
 
             val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
             val result = movieList!![position]
 
-            evenViewHolder.bind(context, result, listener)
+            evenViewHolder.bind(result)
         }
     }
 

@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.Urls
+import com.practice.moviedatabase.AllConstants
 import com.practice.moviedatabase.adapters.MovieListAdapter
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Result
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     override fun onItemClicked(result: Result, outputDate: String?) {
 
         val intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra("poster_url", Urls.BASE_IMAGE_URL + result.posterPath)
+        intent.putExtra("poster_url", AllConstants.BASE_IMAGE_URL + result.posterPath)
         intent.putExtra("title", result.title)
         intent.putExtra("release_date", outputDate)
         intent.putExtra("vote_average", result.voteAverage.toString())

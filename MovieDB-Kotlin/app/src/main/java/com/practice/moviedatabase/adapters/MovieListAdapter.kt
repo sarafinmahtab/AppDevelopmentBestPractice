@@ -42,12 +42,14 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         if (holder.itemViewType == movieOddItem) {
 
             val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
+            //TODO: remove duplicate code
             val result = movieList!![position]
 
             oddViewHolder.bind(result)
         } else {
 
             val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
+            //TODO: remove duplicate code
             val result = movieList!![position]
 
             evenViewHolder.bind(result)

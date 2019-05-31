@@ -84,13 +84,22 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
     override fun onItemClicked(result: Result, outputDate: String?) {
 
-        val intent = Intent(this, MovieDetailsActivity::class.java)
+        if (checked) {
+            val intent = Intent(this, MovieDetailsActivity::class.java)
+            intent.putExtra("backdrop_url", AllConstants.BASE_IMAGE_URL + result.backdropPath)
+            startNextActivity(result, outputDate, intent)
+        } else {
+            val intent = Intent(this, MovieShortDetailsActivity::class.java)
+            startNextActivity(result, outputDate, intent)
+        }
+    }
+
+    private fun startNextActivity(result: Result, outputDate: String?, intent: Intent) {
         intent.putExtra("poster_url", AllConstants.BASE_IMAGE_URL + result.posterPath)
         intent.putExtra("title", result.title)
         intent.putExtra("release_date", outputDate)
         intent.putExtra("vote_average", result.voteAverage.toString())
         intent.putExtra("overview", result.overview)
-        intent.putExtra("checked", checked)
         startActivity(intent)
     }
 

@@ -5,9 +5,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.practice.moviedatabase.AllConstants
-import com.practice.moviedatabase.AllConstants.inputDateFormat
-import com.practice.moviedatabase.AllConstants.outputDateFormat
+import com.practice.moviedatabase.utility.AllConstants
+import com.practice.moviedatabase.utility.AllConstants.inputDateFormat
+import com.practice.moviedatabase.utility.AllConstants.outputDateFormat
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Result

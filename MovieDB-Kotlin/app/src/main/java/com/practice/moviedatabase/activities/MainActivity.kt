@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.AllConstants
+import com.practice.moviedatabase.utility.AllConstants
 import com.practice.moviedatabase.adapters.MovieListAdapter
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Result
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
 
-        viewModel.requestTopRatedMoviesApi(TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
+        viewModel.requestTopRatedMoviesApi(this, TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
             getString(R.string.default_page), getString(R.string.sorted_by)))
     }
 

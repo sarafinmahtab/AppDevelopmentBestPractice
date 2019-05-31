@@ -1,6 +1,6 @@
 package com.practice.moviedatabase.networks
 
-import com.practice.moviedatabase.AllConstants
+import com.practice.moviedatabase.utility.AllConstants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,7 +20,7 @@ class ApiClient private constructor() {
 
     companion object {
 
-        private val BASE_URL = AllConstants.BASE_URL
+        private const val BASE_URL = AllConstants.BASE_URL
 
         // Use volatile keyword to ensure that the Singleton is thread safe.
         @Volatile

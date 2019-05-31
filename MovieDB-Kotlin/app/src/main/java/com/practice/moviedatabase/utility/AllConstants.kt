@@ -1,4 +1,4 @@
-package com.practice.moviedatabase
+package com.practice.moviedatabase.utility
 
 import java.text.SimpleDateFormat
 import java.util.*

@@ -10,10 +10,7 @@ import com.practice.moviedatabase.networks.ApiService
 import com.practice.moviedatabase.nitrite.DBConstants.topRatedMovieCollection
 import com.practice.moviedatabase.nitrite.LocalDBManager
 import com.practice.moviedatabase.utility.SystemActionCheck
-import com.practice.moviedatabase.waspdb.WaspDBManager
-import com.practice.moviedatabase.waspdb.WaspHashConstants
 import kotlinx.coroutines.withContext
-import org.dizitart.no2.objects.ObjectRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

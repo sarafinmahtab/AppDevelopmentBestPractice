@@ -73,13 +73,15 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         progressBar.visibility = View.VISIBLE
 
         val apiService = ApiClient.client?.create(ApiService::class.java)
-        val repository = TopRatedMovieRepository(apiService)
+        val repository = TopRatedMovieRepository(this, apiService)
 
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
 
-        viewModel.requestTopRatedMoviesApi(this, TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
-            getString(R.string.default_page), getString(R.string.sorted_by)))
+        viewModel.requestTopRatedMoviesApi(
+            TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
+                getString(R.string.default_page), getString(R.string.sorted_by))
+        )
     }
 
     override fun onItemClicked(result: Result, outputDate: String?) {

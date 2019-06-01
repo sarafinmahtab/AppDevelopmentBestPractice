@@ -9,8 +9,10 @@ import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiService
 import com.practice.moviedatabase.nitrite.DBConstants.topRatedMovieCollection
 import com.practice.moviedatabase.nitrite.LocalDBManager
+import com.practice.moviedatabase.nitrite.MovieDao
 import com.practice.moviedatabase.utility.SystemActionCheck
 import kotlinx.coroutines.withContext
+import org.dizitart.no2.Nitrite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,40 +20,36 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class TopRatedMovieRepository constructor(private var context: Context, private var apiService: ApiService?) :
+class TopRatedMovieRepository constructor(context: Context, private var apiService: ApiService?, val db: MovieDao) :
     UseCase<TopRatedMovieParams, TopRatedMovie>() {
+    val appContext: Context = context.applicationContext
 
     override suspend fun execute(parameters: TopRatedMovieParams): TopRatedMovie = withContext(AppDispatcher.io) {
 
-        if (SystemActionCheck.isInternetOn(context)) {
-            return@withContext getMovies(parameters.apiKey!!, parameters.language!!, parameters.page!!, parameters.sortedBy!!)
+        if (SystemActionCheck.isInternetOn(appContext)) {
+            return@withContext getMovies(
+                parameters.apiKey!!,
+                parameters.language!!,
+                parameters.page!!,
+                parameters.sortedBy!!
+            )
         } else {
-            return@withContext retrieveMoviesFromLocal(context)
+            return@withContext retrieveMoviesFromLocal(appContext)
         }
     }
 
     private fun retrieveMoviesFromLocal(context: Context): TopRatedMovie {
-
-        val db = LocalDBManager.getDBInstance(context)
-
-        val dbRepository = db.getRepository(topRatedMovieCollection, TopRatedMovie::class.java)
-
-        return dbRepository.find().firstOrDefault()
+        return db.get()
     }
 
-    private fun updateToLocalDB(context: Context, result: Any) {
-
+    private fun updateToLocalDB(result: Any) {
         val topRatedMovie = result as TopRatedMovie
-
-        val db = LocalDBManager.getDBInstance(context)
-
-        val dbRepository = db.getRepository(topRatedMovieCollection, TopRatedMovie::class.java)
-
-        dbRepository.insert(topRatedMovie)
+        db.insert(topRatedMovie)
     }
 
     private suspend fun getMovies(
-        apiKey: String, language: String, page: String, sortedBy: String): TopRatedMovie {
+        apiKey: String, language: String, page: String, sortedBy: String
+    ): TopRatedMovie {
 
         return suspendCoroutine {
 
@@ -69,7 +67,7 @@ class TopRatedMovieRepository constructor(private var context: Context, private 
 
                     Log.d("RetrofitResponse", response.body().toString())
                     it.resume(response.body()!!)
-                    updateToLocalDB(context, response.body()!!)
+                    updateToLocalDB(response.body()!!)
                 }
             })
         }

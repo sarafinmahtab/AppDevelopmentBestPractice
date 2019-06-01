@@ -18,6 +18,7 @@ import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiClient
 import com.practice.moviedatabase.networks.ApiService
+import com.practice.moviedatabase.nitrite.LocalDBManager
 import com.practice.moviedatabase.repositories.TopRatedMovieRepository
 import com.practice.moviedatabase.viewmodels.TopRatedMovieViewModel
 import com.practice.moviedatabase.viewmodels.factories.TopRatedViewModelFactory
@@ -27,8 +28,8 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
 
-    private lateinit var viewModel : TopRatedMovieViewModel
-    private lateinit var adapter : MovieListAdapter
+    private lateinit var viewModel: TopRatedMovieViewModel
+    private lateinit var adapter: MovieListAdapter
 
     private var checked: Boolean = false
 
@@ -73,14 +74,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         progressBar.visibility = View.VISIBLE
 
         val apiService = ApiClient.client?.create(ApiService::class.java)
-        val repository = TopRatedMovieRepository(this, apiService)
+        val movieDao = LocalDBManager.getDBInstance(this)
+        val repository = TopRatedMovieRepository(this, apiService, movieDao)
 
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
 
         viewModel.init(
-            TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
-                getString(R.string.default_page), getString(R.string.sorted_by))
+            TopRatedMovieParams(
+                getString(R.string.api_key), getString(R.string.language),
+                getString(R.string.default_page), getString(R.string.sorted_by)
+            )
         )
     }
 

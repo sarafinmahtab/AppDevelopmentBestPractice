@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.practice.moviedatabase.utility.AllConstants
 import com.practice.moviedatabase.utility.AllConstants.inputDateFormat
 import com.practice.moviedatabase.utility.AllConstants.outputDateFormat
@@ -33,6 +34,7 @@ class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         Glide.with(itemView.context)
             .load(AllConstants.BASE_IMAGE_URL + result.posterPath)
             .placeholder(R.drawable.ic_movie_poster)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(moviePosterImageView)
 
         itemView.setOnClickListener {

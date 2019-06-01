@@ -2,12 +2,15 @@ package com.practice.moviedatabase.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import org.dizitart.no2.objects.Id
+import java.io.Serializable
 
-class Result {
+class Result : Serializable {
 
     @SerializedName("vote_count")
     @Expose
     var voteCount: Int = 0
+    @Id
     @SerializedName("id")
     @Expose
     var id: Int = 0

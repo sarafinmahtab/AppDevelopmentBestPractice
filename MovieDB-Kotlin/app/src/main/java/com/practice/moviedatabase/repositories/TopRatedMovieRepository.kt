@@ -7,10 +7,13 @@ import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.networks.ApiService
+import com.practice.moviedatabase.nitrite.DBConstants.topRatedMovieCollection
+import com.practice.moviedatabase.nitrite.LocalDBManager
 import com.practice.moviedatabase.utility.SystemActionCheck
 import com.practice.moviedatabase.waspdb.WaspDBManager
 import com.practice.moviedatabase.waspdb.WaspHashConstants
 import kotlinx.coroutines.withContext
+import org.dizitart.no2.objects.ObjectRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,19 +34,23 @@ class TopRatedMovieRepository constructor(private var context: Context, private 
     }
 
     private fun retrieveMoviesFromLocal(context: Context): TopRatedMovie {
-        val waspDb = WaspDBManager.instance?.getDatabase(context)
 
-        val topRatedMovies = waspDb?.openOrCreateHash(WaspHashConstants.topRatedMovieHash)
+        val db = LocalDBManager.getDBInstance(context)
 
-        return topRatedMovies!!.get<TopRatedMovie>(WaspHashConstants.topRatedMovieHash)
+        val dbRepository = db.getRepository(topRatedMovieCollection, TopRatedMovie::class.java)
+
+        return dbRepository.find().firstOrDefault()
     }
 
-    private fun updateToWaspDB(context: Context, result: Any) {
-        val waspDb = WaspDBManager.instance?.getDatabase(context)
+    private fun updateToLocalDB(context: Context, result: Any) {
 
-        val topRatedMovies = waspDb?.openOrCreateHash(WaspHashConstants.topRatedMovieHash)
+        val topRatedMovie = result as TopRatedMovie
 
-        topRatedMovies?.put(WaspHashConstants.topRatedMovieHash, result)
+        val db = LocalDBManager.getDBInstance(context)
+
+        val dbRepository = db.getRepository(topRatedMovieCollection, TopRatedMovie::class.java)
+
+        dbRepository.insert(topRatedMovie)
     }
 
     private suspend fun getMovies(
@@ -65,7 +72,7 @@ class TopRatedMovieRepository constructor(private var context: Context, private 
 
                     Log.d("RetrofitResponse", response.body().toString())
                     it.resume(response.body()!!)
-                    updateToWaspDB(context, response.body()!!)
+                    updateToLocalDB(context, response.body()!!)
                 }
             })
         }

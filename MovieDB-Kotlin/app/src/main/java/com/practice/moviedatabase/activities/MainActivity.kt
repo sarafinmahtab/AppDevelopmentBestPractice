@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
 
-        viewModel.requestTopRatedMoviesApi(
+        viewModel.init(
             TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
                 getString(R.string.default_page), getString(R.string.sorted_by))
         )

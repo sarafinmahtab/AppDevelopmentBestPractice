@@ -1,6 +1,7 @@
 package com.practice.moviedatabase.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel
 import com.practice.moviedatabase.models.TopRatedMovie
@@ -10,11 +11,30 @@ import kotlinx.coroutines.launch
 
 class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : BaseViewModel() {
 
-    val topRateMovieLiveData: MutableLiveData<TopRatedMovie> = MutableLiveData()
+    val topRateMovieLiveData: MediatorLiveData<TopRatedMovie> = MediatorLiveData()
+    val _param = MediatorLiveData<TopRatedMovieParams>()
 
-    fun requestTopRatedMoviesApi(params: TopRatedMovieParams) {
-        refreshTopRatedMovie(params)
+    init {
+        topRateMovieLiveData.addSource(_param) {
+            refreshTopRatedMovie(it)
+        }
     }
+
+
+    fun init(params: TopRatedMovieParams) {
+        val lastParam = _param.value
+        if (lastParam != params) {
+            _param.value = params
+        }
+    }
+
+    fun refresh() {
+        val lastParam = _param.value
+        if (lastParam != null) {
+            refreshTopRatedMovie(lastParam)
+        }
+    }
+
 
     private fun refreshTopRatedMovie(params: TopRatedMovieParams) {
 

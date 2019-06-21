@@ -1,8 +1,8 @@
 package com.practice.moviedatabase.base
 
-import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.Movie
 
 interface ItemClickListener {
 
-    fun onItemClicked(result: Result, outputDate: String?)
+    fun onItemClicked(movie: Movie, outputDate: String?)
 }

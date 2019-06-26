@@ -2,6 +2,7 @@
   <dictionary name="mahtab">
     <words>
       <w>coroutines</w>
+      <w>gson</w>
     </words>
   </dictionary>
 </component>

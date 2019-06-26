@@ -8,7 +8,7 @@ import com.practice.moviedatabase.models.Movie
 interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovies(vararg movies: List<Movie>?)
+    fun insertMovies(movies: List<Movie>)
 
     @Query("SELECT * FROM $TABLE_MOVIE")
     fun getMovies(): List<Movie>

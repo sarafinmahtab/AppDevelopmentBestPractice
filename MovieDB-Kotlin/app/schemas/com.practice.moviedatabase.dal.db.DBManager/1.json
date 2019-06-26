@@ -2,48 +2,111 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6a83ed78a63d72f3132515d8718fcdb7",
+    "identityHash": "0e7e04d27f70105618e74afde5a18e31",
     "entities": [
       {
-        "tableName": "TopRatedMovie",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`page` INTEGER NOT NULL, `total_results` INTEGER NOT NULL, `total_pages` INTEGER NOT NULL, `results` TEXT)",
+        "tableName": "Movie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `vote_count` INTEGER NOT NULL, `video` INTEGER NOT NULL, `vote_average` REAL NOT NULL, `title` TEXT, `popularity` REAL NOT NULL, `poster_path` TEXT, `original_language` TEXT, `original_title` TEXT, `genre_ids` TEXT, `backdrop_path` TEXT, `adult` INTEGER NOT NULL, `overview` TEXT, `release_date` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
-            "fieldPath": "page",
-            "columnName": "page",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "totalResults",
-            "columnName": "total_results",
+            "fieldPath": "voteCount",
+            "columnName": "vote_count",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "totalPages",
-            "columnName": "total_pages",
+            "fieldPath": "isVideo",
+            "columnName": "video",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "results",
-            "columnName": "results",
+            "fieldPath": "voteAverage",
+            "columnName": "vote_average",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "popularity",
+            "columnName": "popularity",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "posterPath",
+            "columnName": "poster_path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "originalLanguage",
+            "columnName": "original_language",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "originalTitle",
+            "columnName": "original_title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "genreIds",
+            "columnName": "genre_ids",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "backdropPath",
+            "columnName": "backdrop_path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isAdult",
+            "columnName": "adult",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "overview",
+            "columnName": "overview",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "releaseDate",
+            "columnName": "release_date",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
-          "columnNames": [],
+          "columnNames": [
+            "id"
+          ],
           "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6a83ed78a63d72f3132515d8718fcdb7\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e7e04d27f70105618e74afde5a18e31')"
     ]
   }
 }

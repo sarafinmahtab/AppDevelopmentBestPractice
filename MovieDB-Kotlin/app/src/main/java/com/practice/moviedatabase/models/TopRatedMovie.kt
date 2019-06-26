@@ -13,7 +13,7 @@ data class TopRatedMovie (
     @SerializedName("total_pages")
     @Expose
     var totalPages: Int,
-    @SerializedName("movies")
+    @SerializedName("results")
     @Expose
     var movies: List<Movie>?
 )

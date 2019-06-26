@@ -8,7 +8,7 @@ class Converters {
     companion object {
         @TypeConverter
         @JvmStatic
-        fun fromIntArray(genreIds: List<Int>): String {
+        fun fromIntArray(genreIds: ArrayList<Int>): String {
             return StringBuilder().apply {
                 for ((i, id) in genreIds.withIndex()) {
                     if (i == genreIds.lastIndex) this.append(id)
@@ -19,7 +19,7 @@ class Converters {
 
         @TypeConverter
         @JvmStatic
-        fun toIntArray(ids: String): List<Int> {
+        fun toIntArray(ids: String): ArrayList<Int> {
 
             val genreIds = ArrayList<Int>()
 

@@ -1,3 +1,7 @@
 package com.practice.moviedatabase.models.params
 
-data class TopRatedMovieParams(var apiKey: String?, var language: String?, var page: String?, var sortedBy: String?)
+data class TopRatedMovieParams
+    (val apiKey: String,
+     val language: String,
+     val page: String,
+     val sortedBy: String)

@@ -63,7 +63,7 @@ data class Movie (
 
     @SerializedName("genre_ids")
     @Expose
-    @ColumnInfo(name = COLUMN_GENRE_IDS) var genreIds: List<Int>?,
+    @ColumnInfo(name = COLUMN_GENRE_IDS) var genreIds: ArrayList<Int>?,
 
     @SerializedName("backdrop_path")
     @Expose

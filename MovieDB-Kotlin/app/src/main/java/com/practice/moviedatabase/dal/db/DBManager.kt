@@ -13,16 +13,19 @@ import com.practice.moviedatabase.models.Movie
     version = 1,
     exportSchema = true)
 @TypeConverters(Converters::class)
-abstract class DBManager: RoomDatabase(), AppDao {
+abstract class DBManager: RoomDatabase() {
+
+    abstract fun appDao(): AppDao
 
     companion object {
 
-        fun getAppDatabase(application: Application): DBManager {
-            return  Room.databaseBuilder(
+        fun getInstance(application: Application): AppDao {
+
+            return Room.databaseBuilder(
                 application,
                 DBManager::class.java,
                 DATABASE_NAME
-            ).allowMainThreadQueries().build()
+            ).allowMainThreadQueries().build().appDao()
         }
     }
 }

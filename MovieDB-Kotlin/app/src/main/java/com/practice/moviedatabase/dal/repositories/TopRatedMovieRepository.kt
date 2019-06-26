@@ -4,54 +4,51 @@ import android.util.Log
 import com.practice.moviedatabase.base.AppDispatcher
 import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.dal.db.AppDao
-import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.dal.networks.ApiService
 import com.practice.moviedatabase.models.Movie
+import com.practice.moviedatabase.models.Result
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
-class TopRatedMovieRepository constructor(val internetOn: Boolean,
-                                          private val apiService: ApiService?,
-                                          val appDao: AppDao) :
-    UseCase<TopRatedMovieParams, List<Movie>>() {
+class TopRatedMovieRepository constructor(
+    private val internetOn: Boolean,
+    private val apiService: ApiService,
+    private val appDao: AppDao) :
+    UseCase<TopRatedMovieParams, Result<List<Movie>>>() {
 
-    override suspend fun execute(parameters: TopRatedMovieParams): List<Movie> = withContext(AppDispatcher.io) {
+    private val tag = this.javaClass.simpleName
 
-        if (internetOn) {
-            return@withContext getMovies(parameters.apiKey!!, parameters.language!!, parameters.page!!, parameters.sortedBy!!)
-        } else {
-            return@withContext appDao.getMovies()
-        }
-    }
+    override suspend fun execute(parameters: TopRatedMovieParams): Result<List<Movie>> = withContext(AppDispatcher.io) {
 
-    private suspend fun getMovies(
-        apiKey: String, language: String, page: String, sortedBy: String): List<Movie> {
+        return@withContext try {
 
-        return suspendCoroutine {
+            if (internetOn) {
 
-            val call = apiService?.getTopRatedMovies(apiKey, language, page, sortedBy)
+                val result = apiService.getTopRatedMoviesAsync(
+                    parameters.apiKey, parameters.language,
+                    parameters.page, parameters.sortedBy
+                ).await()
 
-            call?.enqueue(object : Callback<TopRatedMovie> {
-
-                override fun onFailure(call: Call<TopRatedMovie>, t: Throwable) {
-
-                    Log.d("RetrofitFailure", t.message!!)
-                    it.resumeWithException(t)
+                if (result.movies.isNullOrEmpty()) {
+                    Result.error<List<Movie>>(Exception("Movies value is Null or Empty"))
+                } else {
+                    appDao.insertMovies(result.movies!!)
+                    Result.success(result.movies!!)
                 }
+            } else {
 
-                override fun onResponse(call: Call<TopRatedMovie>, response: Response<TopRatedMovie>) {
+                val movies = appDao.getMovies()
 
-                    Log.d("RetrofitResponse", response.body().toString())
-                    it.resume(response.body()!!.movies!!)
-                    appDao.insertMovies(response.body()!!.movies!!)
+                if (movies.isNullOrEmpty()) {
+                    Result.error<List<Movie>>(Exception("Movies value is Null or Empty"))
+                } else {
+                    Result.success(movies)
                 }
-            })
+            }
+
+        } catch (e: Exception) {
+            Log.w(tag, e.toString())
+            Result.error<List<Movie>>(e)
         }
     }
 }

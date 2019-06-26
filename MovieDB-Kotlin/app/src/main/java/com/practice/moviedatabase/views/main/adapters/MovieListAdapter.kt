@@ -8,17 +8,14 @@ import com.practice.moviedatabase.R
 import com.practice.moviedatabase.views.main.adapters.viewholders.MovieEvenListViewHolder
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Movie
-import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.views.main.adapters.viewholders.MovieOddListViewHolder
-import java.util.*
 
 class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val movieOddItem: Int = 0
     private val movieEvenItem: Int = 1
 
-    private var topRatedMovie: TopRatedMovie? = null
-    private var movieList: List<Movie>? = null
+    private var movieList: List<Movie> = arrayListOf()
 
     private lateinit var listener: ItemClickListener
 
@@ -42,13 +39,13 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         if (holder.itemViewType == movieOddItem) {
 
             val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
-            val result = movieList!![position]
+            val result = movieList[position]
 
             oddViewHolder.bind(result)
         } else {
 
             val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
-            val result = movieList!![position]
+            val result = movieList[position]
 
             evenViewHolder.bind(result)
         }
@@ -59,17 +56,11 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     }
 
     override fun getItemCount(): Int {
-        return movieList!!.size
+        return movieList.size
     }
 
-    fun setTopRatedMovie(topRatedMovie: TopRatedMovie) {
-        this.topRatedMovie = topRatedMovie
-
-        if (topRatedMovie.movies == null) {
-            this.movieList = ArrayList()
-        } else {
-            this.movieList = topRatedMovie.movies
-        }
+    fun setTopRatedMovie(movies: List<Movie>) {
+        movieList = movies
     }
 
     fun setItemClickListener(listener: ItemClickListener) {

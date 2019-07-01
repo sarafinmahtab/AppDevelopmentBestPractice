@@ -10,7 +10,7 @@ import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
 import kotlinx.coroutines.withContext
 
-class TopRatedMovieRepository constructor(
+class TopRatedMovieRepository(
     private val internetOn: Boolean,
     private val apiService: ApiService,
     private val appDao: AppDao) :

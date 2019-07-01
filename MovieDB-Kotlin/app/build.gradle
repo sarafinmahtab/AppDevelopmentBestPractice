@@ -36,6 +36,13 @@ android {
     }
 }
 
+// Library Versions
+ext.lifecycle_version = "2.0.0"
+ext.room_version = "2.1.0"
+ext.coroutines_version = "1.2.1"
+ext.retrofit_version = "2.5.0"
+ext.glide_version = "4.9.0"
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -48,11 +55,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    def lifecycle_version = "2.0.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
-    def room_version = "2.1.0"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -61,19 +66,16 @@ dependencies {
 //    implementation 'com.google.dagger:dagger:2.21'
 //    annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
 
-    def coroutines_version = "1.2.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0' // Don't Upgrade if minimum API level < 21
 
-    def retrofit_version = "2.5.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
 
-    def glide_version = "4.9.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 

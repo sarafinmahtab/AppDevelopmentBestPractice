@@ -5,3 +5,7 @@ data class TopRatedMovieParams
      val language: String,
      val page: String,
      val sortedBy: String)
+
+data class GenreParams
+    (val apiKey: String,
+     val language: String)

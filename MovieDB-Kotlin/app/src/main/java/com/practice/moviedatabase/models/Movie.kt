@@ -1,10 +1,13 @@
 package com.practice.moviedatabase.models
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.practice.moviedatabase.dal.db.Converters
 import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_ADULT
 import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_BACKDROP_PATH
 import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_GENRE_IDS
@@ -80,4 +83,53 @@ data class Movie (
     @SerializedName("release_date")
     @Expose
     @ColumnInfo(name = COLUMN_RELEASE_DATE) var releaseDate: String?
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readDouble(),
+        parcel.readString(),
+        parcel.readDouble(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        Converters.toIntArray(parcel.readString()?:""),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readString(),
+        parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeInt(voteCount)
+        parcel.writeByte(if (isVideo) 1 else 0)
+        parcel.writeDouble(voteAverage)
+        parcel.writeString(title)
+        parcel.writeDouble(popularity)
+        parcel.writeString(posterPath)
+        parcel.writeString(originalLanguage)
+        parcel.writeString(originalTitle)
+        parcel.writeString(Converters.fromIntArray(genreIds?: arrayListOf()))
+        parcel.writeString(backdropPath)
+        parcel.writeByte(if (isAdult) 1 else 0)
+        parcel.writeString(overview)
+        parcel.writeString(releaseDate)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Movie> {
+        override fun createFromParcel(parcel: Parcel): Movie {
+            return Movie(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Movie?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

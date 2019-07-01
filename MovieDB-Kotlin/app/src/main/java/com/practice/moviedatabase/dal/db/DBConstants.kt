@@ -20,4 +20,10 @@ object DBConstants {
     const val COLUMN_ADULT = "adult"
     const val COLUMN_OVERVIEW = "overview"
     const val COLUMN_RELEASE_DATE = "release_date"
+
+    // Genre Table Constants
+    const val TABLE_GENRE = "genre"
+
+    const val COLUMN_GENRE_ID = "id"
+    const val COLUMN_GENRE_NAME = "name"
 }

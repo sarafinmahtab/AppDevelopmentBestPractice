@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,7 @@ import com.practice.moviedatabase.dal.networks.ApiService
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
 import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.utilities.ServerConstants.BASE_URL
-import com.practice.moviedatabase.utilities.SystemAction
+import com.practice.moviedatabase.utilities.getConnectivityStatus
 import com.practice.moviedatabase.views.main.viewmodels.TopRatedMovieViewModel
 import com.practice.moviedatabase.views.main.viewmodels.factories.TopRatedViewModelFactory
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var viewModel : TopRatedMovieViewModel
     private lateinit var adapter : MovieListAdapter
 
-    private var checked: Boolean = false
+    private var checked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +56,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         val layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.layoutManager = layoutManager
         movieListRecyclerView.adapter = adapter
-
-        detailsViewSwitch.isChecked = false
-
-        detailsViewSwitch.setOnCheckedChangeListener { _, isChecked ->
-            checked = isChecked
-        }
     }
 
     private fun viewModelObservers() {
@@ -69,10 +64,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
          * Dependency Injected manually
          */
 
-        val internetOn = SystemAction.isInternetOn(this)
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
-        val repository = TopRatedMovieRepository(internetOn, apiService, appDao)
+        val repository = TopRatedMovieRepository(getConnectivityStatus(), apiService, appDao)
 
         viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
             .get(TopRatedMovieViewModel::class.java)
@@ -138,8 +132,19 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+            R.id.action_settings -> {
+                if (checked) {
+                    checked = false
+                    item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_simple_glass, null)
+                } else {
+                    checked = true
+                    item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_color_glass, null)
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 }

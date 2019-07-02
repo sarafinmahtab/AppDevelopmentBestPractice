@@ -23,7 +23,7 @@ class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : 
         }
     }
 
-    fun init(params: TopRatedMovieParams) {
+    fun setParams(params: TopRatedMovieParams) {
         val lastParam = topRatedMovieParams.value
         if (lastParam != params) {
             topRatedMovieParams.value = params

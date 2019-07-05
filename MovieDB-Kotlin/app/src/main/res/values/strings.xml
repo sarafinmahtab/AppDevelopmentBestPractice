@@ -4,10 +4,7 @@
     <string name="title_activity_movie">Movie Details</string>
     <string name="title_activity_movie_short_details">Movie Short Details</string>
 
-    <string name="api_key">6371db70ffc8e719f981e307e397452e</string>
-    <string name="language">en-US</string>
-    <string name="default_page">1</string>
-    <string name="sorted_by">vote_average.asc</string>
     <string name="details_view">Details View</string>
     <string name="action_switch">Details Switch</string>
+    <string name="loading_more_popular_movies">Loading more popular movies…</string>
 </resources>

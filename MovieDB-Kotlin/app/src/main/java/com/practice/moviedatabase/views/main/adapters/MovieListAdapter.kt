@@ -5,66 +5,112 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.views.main.adapters.viewholders.MovieEvenListViewHolder
 import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.dal.PageLoadListener
+import com.practice.moviedatabase.dal.networks.ServerConstants.apiKey
+import com.practice.moviedatabase.dal.networks.ServerConstants.language
+import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
+import com.practice.moviedatabase.dal.networks.ServerConstants.sortedBy
 import com.practice.moviedatabase.models.Movie
-import com.practice.moviedatabase.views.main.adapters.viewholders.MovieOddListViewHolder
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
+
 
 class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val movieOddItem: Int = 0
-    private val movieEvenItem: Int = 1
 
-    private var movieList: List<Movie> = arrayListOf()
+    private val movieOddHolderID: Int = 0
+    private val movieEvenHolderID: Int = 1
+    private val movieLoadHolderID: Int = 2
+    private val anyHolderID = 3
 
-    private lateinit var listener: ItemClickListener
+    private var movieList: MutableList<Movie> = mutableListOf()
+
+    private lateinit var clickListener: ItemClickListener
+    private lateinit var pagingListener: PageLoadListener<TopRatedMovieParams>
+
+    private var currentPageKey = pageKey
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        val oddView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_odd, parent, false)
-        val evenView = LayoutInflater.from(context).inflate(R.layout.layout_movie_item_even, parent, false)
+        val oddView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_movie_item_odd, parent, false)
+        val evenView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_movie_item_even, parent, false)
+        val loadingView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_movie_loader, parent, false)
 
         return when (viewType) {
-            movieOddItem -> MovieOddListViewHolder(oddView).apply {
-                setItemClickListener(listener)
+            movieOddHolderID -> MovieOddListViewHolder(oddView).apply {
+                setItemClickListener(clickListener)
             }
-            else -> MovieEvenListViewHolder(evenView).apply {
-                setItemClickListener(listener)
+            movieEvenHolderID -> MovieEvenListViewHolder(evenView).apply {
+                setItemClickListener(clickListener)
             }
+            movieLoadHolderID -> MovieLoadingViewHolder(loadingView)
+            else -> MovieLoadingViewHolder(loadingView)
         }
     }
 
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        if (holder.itemViewType == movieOddItem) {
+        when {
+            holder.itemViewType == movieOddHolderID -> {
 
-            val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
-            val result = movieList[position]
+                val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
+                val result = movieList[position]
 
-            oddViewHolder.bind(result)
-        } else {
+                oddViewHolder.bind(result)
+            }
+            holder.itemViewType == movieEvenHolderID -> {
 
-            val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
-            val result = movieList[position]
+                val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
+                val result = movieList[position]
 
-            evenViewHolder.bind(result)
+                evenViewHolder.bind(result)
+            }
+            holder.itemViewType == movieLoadHolderID -> {
+                currentPageKey += 1
+                pagingListener.loadNextPage(
+                    TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
+                )
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position.and(1) == 1) movieOddItem else movieEvenItem
+
+        return when {
+            (position == movieList.size && movieList.size != 0) -> movieLoadHolderID
+            (position.and(1) == 1 && position != movieList.size) -> movieEvenHolderID
+            (position.and(1) == 0 && position != movieList.size) -> movieOddHolderID
+            else -> anyHolderID
+        }
     }
 
     override fun getItemCount(): Int {
-        return movieList.size
+        return movieList.size + 1
     }
 
-    fun setTopRatedMovie(movies: List<Movie>) {
+    fun setTopRatedMovie(movies: MutableList<Movie>) {
         movieList = movies
         notifyDataSetChanged()
     }
 
+    fun updateTopRatedMovie(movies: MutableList<Movie>) {
+        movieList.addAll(movies)
+        notifyDataSetChanged()
+    }
+
     fun setItemClickListener(listener: ItemClickListener) {
-        this.listener = listener
+        this.clickListener = listener
+    }
+
+    fun setPagingListener(listener: PageLoadListener<TopRatedMovieParams>) {
+        this.pagingListener = listener
+        this.pagingListener.loadFirstPage(
+            TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
+        )
     }
 }

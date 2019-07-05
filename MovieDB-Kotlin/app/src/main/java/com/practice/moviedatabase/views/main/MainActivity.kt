@@ -14,15 +14,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.bll.PrepareTopRatedMovieLogic
+import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.db.DBManager
 import com.practice.moviedatabase.dal.networks.ApiClient
 import com.practice.moviedatabase.dal.networks.ApiService
+import com.practice.moviedatabase.dal.networks.ServerConstants
+import com.practice.moviedatabase.dal.networks.ServerConstants.BASE_URL
+import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
-import com.practice.moviedatabase.utilities.ServerConstants
-import com.practice.moviedatabase.utilities.ServerConstants.BASE_URL
 import com.practice.moviedatabase.utilities.getConnectivityStatus
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
 import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
@@ -32,26 +34,31 @@ import com.practice.moviedatabase.views.main.viewmodels.factories.TopRatedViewMo
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity(), ItemClickListener {
+
+
+class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<TopRatedMovieParams> {
 
     private lateinit var viewModel: TopRatedMovieViewModel
     private lateinit var adapter: MovieListAdapter
 
     private var checked = false
+    private var currentPageKey = pageKey
+    private var previousPageKey = currentPageKey
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        initViews()
         viewModelObservers()
+        initViews()
     }
 
     private fun initViews() {
 
         adapter = MovieListAdapter(this)
         adapter.setItemClickListener(this)
+        adapter.setPagingListener(this)
 
         val layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.layoutManager = layoutManager
@@ -75,27 +82,37 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             )
         ).get(TopRatedMovieViewModel::class.java)
 
-        viewModel.setParams(
-            TopRatedMovieParams(
-                getString(R.string.api_key), getString(R.string.language),
-                getString(R.string.default_page), getString(R.string.sorted_by)
-            )
-        )
-
-        viewModel.topRateMovieLiveData.observe(this@MainActivity, Observer {
+        viewModel.topRatedMovieLiveData.observe(this@MainActivity, Observer {
             handleMoviesData(it)
         })
+    }
+
+    override fun loadFirstPage(params: TopRatedMovieParams) {
+        viewModel.setParams(params)
+    }
+
+    override fun loadNextPage(params: TopRatedMovieParams) {
+        previousPageKey = currentPageKey
+        currentPageKey = params.page.toInt()
+        viewModel.setParams(params)
     }
 
     private fun handleMoviesData(result: Result<List<Movie>>) {
         when (result.status) {
             Result.Status.LOADING -> {
-                progressBar.visibility = View.VISIBLE
+                if (currentPageKey == previousPageKey) {
+                    progressBar.visibility = View.VISIBLE
+                }
             }
 
             Result.Status.SUCCESS -> {
                 progressBar.visibility = View.GONE
-                adapter.setTopRatedMovie(result.data!!)
+
+                if (currentPageKey == previousPageKey) {
+                    adapter.setTopRatedMovie(result.data!! as MutableList<Movie>)
+                } else {
+                    adapter.updateTopRatedMovie(result.data!! as MutableList<Movie>)
+                }
             }
 
             Result.Status.ERROR -> {

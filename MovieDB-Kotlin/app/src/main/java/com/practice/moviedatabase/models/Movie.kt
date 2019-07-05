@@ -25,7 +25,7 @@ import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_VOTE_COUNT
 import com.practice.moviedatabase.dal.db.DBConstants.TABLE_MOVIE
 
 @Entity(tableName = TABLE_MOVIE)
-data class Movie (
+data class Movie(
 
     @PrimaryKey
     @SerializedName("id")
@@ -95,7 +95,7 @@ data class Movie (
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        Converters.toIntArray(parcel.readString()?:""),
+        Converters.toIntArray(parcel.readString() ?: ""),
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
         parcel.readString(),
@@ -112,7 +112,7 @@ data class Movie (
         parcel.writeString(posterPath)
         parcel.writeString(originalLanguage)
         parcel.writeString(originalTitle)
-        parcel.writeString(Converters.fromIntArray(genreIds?: arrayListOf()))
+        parcel.writeString(Converters.fromIntArray(genreIds ?: arrayListOf()))
         parcel.writeString(backdropPath)
         parcel.writeByte(if (isAdult) 1 else 0)
         parcel.writeString(overview)

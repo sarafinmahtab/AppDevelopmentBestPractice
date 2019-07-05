@@ -1,6 +1,9 @@
 package com.practice.moviedatabase.dal.db
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_VOTE_AVERAGE
 import com.practice.moviedatabase.dal.db.DBConstants.TABLE_GENRE
 import com.practice.moviedatabase.dal.db.DBConstants.TABLE_MOVIE

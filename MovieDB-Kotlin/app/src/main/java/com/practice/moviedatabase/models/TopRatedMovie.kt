@@ -3,7 +3,7 @@ package com.practice.moviedatabase.models
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class TopRatedMovie (
+data class TopRatedMovie(
     @SerializedName("page")
     @Expose
     var page: Int = 0,

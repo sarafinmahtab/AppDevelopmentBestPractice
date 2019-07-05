@@ -12,9 +12,10 @@ import com.practice.moviedatabase.models.Movie
 @Database(
     entities = [Movie::class, Genre::class],
     version = 1,
-    exportSchema = true)
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
-abstract class DBManager: RoomDatabase() {
+abstract class DBManager : RoomDatabase() {
 
     abstract fun appDao(): AppDao
 

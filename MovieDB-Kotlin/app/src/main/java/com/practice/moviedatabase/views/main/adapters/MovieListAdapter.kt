@@ -61,6 +61,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
 
     fun setTopRatedMovie(movies: List<Movie>) {
         movieList = movies
+        notifyDataSetChanged()
     }
 
     fun setItemClickListener(listener: ItemClickListener) {

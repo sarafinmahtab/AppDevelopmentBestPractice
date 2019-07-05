@@ -1,9 +1,8 @@
 package com.practice.moviedatabase.utilities
 
 import android.content.Context
-import java.net.InetAddress
-import android.net.ConnectivityManager
 import android.content.Context.CONNECTIVITY_SERVICE
+import android.net.ConnectivityManager
 
 
 fun Context.getConnectivityStatus(): Boolean {

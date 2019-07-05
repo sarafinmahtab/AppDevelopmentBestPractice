@@ -6,12 +6,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.practice.moviedatabase.utilities.ServerConstants
-import com.practice.moviedatabase.utilities.ServerConstants.inputDateFormat
-import com.practice.moviedatabase.utilities.ServerConstants.outputDateFormat
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.models.Movie
+import com.practice.moviedatabase.utilities.ServerConstants
+import com.practice.moviedatabase.utilities.ServerConstants.inputDateFormat
+import com.practice.moviedatabase.utilities.ServerConstants.outputDateFormat
 
 class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -25,8 +25,8 @@ class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     fun bind(
         movie: Movie
     ) {
-        val formattedDate = inputDateFormat.parse(movie.releaseDate)
-        val outputDate = outputDateFormat.format(formattedDate)
+        val formattedDate = inputDateFormat.parse(movie.releaseDate!!)
+        val outputDate = outputDateFormat.format(formattedDate!!)
 
         movieTitleTextView.text = movie.title
         releasedDateTextView.text = String.format("Released : %s", outputDate)

@@ -1,7 +1,6 @@
 package com.practice.moviedatabase.dal.db
 
 import androidx.room.TypeConverter
-import java.lang.StringBuilder
 
 class Converters {
 

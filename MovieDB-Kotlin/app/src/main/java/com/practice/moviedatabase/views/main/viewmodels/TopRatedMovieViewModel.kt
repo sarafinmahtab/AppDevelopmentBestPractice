@@ -3,11 +3,11 @@ package com.practice.moviedatabase.views.main.viewmodels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel
-import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
 import com.practice.moviedatabase.models.Genre
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.launch
 
 class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : BaseViewModel() {
@@ -43,11 +43,13 @@ class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : 
 
             val movies = topRateMovieLiveData.value
 
-            if (movies != null) { return@launch }
+            if (movies != null) {
+                return@launch
+            }
 
             topRateMovieLiveData.value = Result.loading()
 
-            val result = repository(params)
+            val result = repository.fetchTopRatedMovies(params)
             topRateMovieLiveData.value = result
         }
     }

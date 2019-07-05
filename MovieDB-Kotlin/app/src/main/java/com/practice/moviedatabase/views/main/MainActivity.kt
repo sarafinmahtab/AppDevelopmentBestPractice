@@ -2,40 +2,40 @@ package com.practice.moviedatabase.views.main
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.views.details.MovieDetailsActivity
-import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
-import com.practice.moviedatabase.utilities.ServerConstants
-import com.practice.moviedatabase.views.main.adapters.MovieListAdapter
 import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.bll.PrepareTopRatedMovieLogic
 import com.practice.moviedatabase.dal.db.DBManager
-import com.practice.moviedatabase.models.Movie
-import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.dal.networks.ApiClient
 import com.practice.moviedatabase.dal.networks.ApiService
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
+import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.params.TopRatedMovieParams
+import com.practice.moviedatabase.utilities.ServerConstants
 import com.practice.moviedatabase.utilities.ServerConstants.BASE_URL
 import com.practice.moviedatabase.utilities.getConnectivityStatus
+import com.practice.moviedatabase.views.details.MovieDetailsActivity
+import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
+import com.practice.moviedatabase.views.main.adapters.MovieListAdapter
 import com.practice.moviedatabase.views.main.viewmodels.TopRatedMovieViewModel
 import com.practice.moviedatabase.views.main.viewmodels.factories.TopRatedViewModelFactory
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), ItemClickListener {
 
-    private lateinit var viewModel : TopRatedMovieViewModel
-    private lateinit var adapter : MovieListAdapter
+    private lateinit var viewModel: TopRatedMovieViewModel
+    private lateinit var adapter: MovieListAdapter
 
     private var checked = false
 
@@ -66,14 +66,20 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
 
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
-        val repository = TopRatedMovieRepository(getConnectivityStatus(), apiService, appDao)
+        val businessLogic = PrepareTopRatedMovieLogic(getConnectivityStatus(), apiService, appDao)
 
-        viewModel = ViewModelProviders.of(this, TopRatedViewModelFactory(repository))
-            .get(TopRatedMovieViewModel::class.java)
+        viewModel = ViewModelProviders.of(
+            this,
+            TopRatedViewModelFactory(
+                TopRatedMovieRepository(businessLogic)
+            )
+        ).get(TopRatedMovieViewModel::class.java)
 
         viewModel.setParams(
-            TopRatedMovieParams(getString(R.string.api_key), getString(R.string.language),
-                getString(R.string.default_page), getString(R.string.sorted_by))
+            TopRatedMovieParams(
+                getString(R.string.api_key), getString(R.string.language),
+                getString(R.string.default_page), getString(R.string.sorted_by)
+            )
         )
 
         viewModel.topRateMovieLiveData.observe(this@MainActivity, Observer {
@@ -90,7 +96,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener {
             Result.Status.SUCCESS -> {
                 progressBar.visibility = View.GONE
                 adapter.setTopRatedMovie(result.data!!)
-                adapter.notifyDataSetChanged()
             }
 
             Result.Status.ERROR -> {

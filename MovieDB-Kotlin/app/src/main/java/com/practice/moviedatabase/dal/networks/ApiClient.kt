@@ -3,7 +3,6 @@ package com.practice.moviedatabase.dal.networks
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.practice.moviedatabase.BuildConfig
-import com.practice.moviedatabase.utilities.ServerConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,9 +19,7 @@ object ApiClient {
         get() {
 
             if (client == null) {
-                /*val interceptor = HttpLoggingInterceptor()
-                interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-
+                /*
                 try {
                     val trustManagerFactory = TrustManagerFactory.getInstance(
                             TrustManagerFactory.getDefaultAlgorithm())
@@ -48,16 +45,18 @@ object ApiClient {
                 } catch (e: KeyManagementException) {
                     e.printStackTrace()
                     client = OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(2, TimeUnit.MINUTES).readTimeout(2, TimeUnit.MINUTES).writeTimeout(2, TimeUnit.MINUTES).build()
-                }*/
+                }
+                */
 
                 val interceptor = HttpLoggingInterceptor()
-                interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-                client = OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(1, TimeUnit.MINUTES).readTimeout(3, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).build()
+                interceptor.level =
+                    if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+                client = OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(3, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).build()
 
             }
             return client!!
         }
-
 
 
     fun getClient(url: String): Retrofit {

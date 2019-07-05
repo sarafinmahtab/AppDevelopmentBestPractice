@@ -4,14 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.practice.moviedatabase.R
-
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import kotlinx.android.synthetic.main.content_movie_details.*
-import kotlinx.android.synthetic.main.content_movie_details.averageVoteTextView
-import kotlinx.android.synthetic.main.content_movie_details.movieReleasedTextView
-import kotlinx.android.synthetic.main.content_movie_details.movieTitleTextView
-import kotlinx.android.synthetic.main.content_movie_details.overviewTextView
-import kotlinx.android.synthetic.main.content_movie_details.posterImageView
 
 class MovieDetailsActivity : AppCompatActivity() {
 

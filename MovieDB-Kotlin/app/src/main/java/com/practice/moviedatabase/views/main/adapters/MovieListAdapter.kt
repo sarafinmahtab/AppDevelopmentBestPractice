@@ -21,7 +21,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     private val movieOddHolderID: Int = 0
     private val movieEvenHolderID: Int = 1
     private val movieLoadHolderID: Int = 2
-    private val anyHolderID = 3
+    private val movieInitialLoadHolderID = 3
 
     private var movieList: MutableList<Movie> = mutableListOf()
 
@@ -39,6 +39,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             .inflate(R.layout.layout_movie_item_even, parent, false)
         val loadingView = LayoutInflater.from(context)
             .inflate(R.layout.layout_movie_loader, parent, false)
+        val initialLoadingView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_initial_movie_loading, parent, false)
 
         return when (viewType) {
             movieOddHolderID -> MovieOddListViewHolder(oddView).apply {
@@ -48,7 +50,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 setItemClickListener(clickListener)
             }
             movieLoadHolderID -> MovieLoadingViewHolder(loadingView)
-            else -> MovieLoadingViewHolder(loadingView)
+            else -> MovieInitialLoadingViewHolder(initialLoadingView)
         }
     }
 
@@ -76,6 +78,10 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                     TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
                 )
             }
+            holder.itemViewType == movieInitialLoadHolderID -> {
+                val initLoadViewHolder: MovieInitialLoadingViewHolder = holder as MovieInitialLoadingViewHolder
+                initLoadViewHolder.load()
+            }
         }
     }
 
@@ -85,7 +91,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             (position == movieList.size && movieList.size != 0) -> movieLoadHolderID
             (position.and(1) == 1 && position != movieList.size) -> movieEvenHolderID
             (position.and(1) == 0 && position != movieList.size) -> movieOddHolderID
-            else -> anyHolderID
+            else -> movieInitialLoadHolderID
         }
     }
 

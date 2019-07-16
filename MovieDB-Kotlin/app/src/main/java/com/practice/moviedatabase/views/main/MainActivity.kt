@@ -100,9 +100,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
     private fun handleMoviesData(result: Result<List<Movie>>) {
         when (result.status) {
             Result.Status.LOADING -> {
-                if (currentPageKey == previousPageKey) {
-                    progressBar.visibility = View.VISIBLE
-                }
+//                if (currentPageKey == previousPageKey) {
+//                    progressBar.visibility = View.VISIBLE
+//                }
             }
 
             Result.Status.SUCCESS -> {

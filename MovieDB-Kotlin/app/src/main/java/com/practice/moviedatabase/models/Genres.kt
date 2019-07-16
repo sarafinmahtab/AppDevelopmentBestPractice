@@ -9,14 +9,14 @@ import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_GENRE_ID
 import com.practice.moviedatabase.dal.db.DBConstants.COLUMN_GENRE_NAME
 import com.practice.moviedatabase.dal.db.DBConstants.TABLE_GENRE
 
-data class Genres (
+data class Genres(
     @SerializedName("genres")
     @Expose
     var genres: List<Genre>?
 )
 
 @Entity(tableName = TABLE_GENRE)
-data class Genre (
+data class Genre(
     @PrimaryKey
     @SerializedName("id")
     @Expose

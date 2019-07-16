@@ -12,7 +12,6 @@ import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.launch
 
 
-
 class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : BaseViewModel() {
 
 

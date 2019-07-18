@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
-import com.practice.moviedatabase.bll.PrepareTopRatedMovieLogic
+import com.practice.moviedatabase.bll.TopRatedMovieUseCase
 import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.db.DBManager
 import com.practice.moviedatabase.dal.networks.ApiClient
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
 
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
-        val businessLogic = PrepareTopRatedMovieLogic(getConnectivityStatus(), apiService, appDao)
+        val businessLogic = TopRatedMovieUseCase(getConnectivityStatus(), apiService, appDao)
 
         viewModel = ViewModelProviders.of(
             this,

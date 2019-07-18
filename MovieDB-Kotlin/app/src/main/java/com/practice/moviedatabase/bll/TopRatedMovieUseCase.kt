@@ -1,6 +1,5 @@
 package com.practice.moviedatabase.bll
 
-import android.util.Log
 import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.dal.db.AppDao
 import com.practice.moviedatabase.dal.networks.ApiService
@@ -10,7 +9,7 @@ import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PrepareTopRatedMovieLogic(
+class TopRatedMovieUseCase(
     private val internetOn: Boolean,
     private val apiService: ApiService,
     private val appDao: AppDao
@@ -49,7 +48,7 @@ class PrepareTopRatedMovieLogic(
             }
 
         } catch (e: Exception) {
-            Log.w(tag, e.toString())
+//            Log.w(tag, e.toString())
             Result.error<List<Movie>>(e)
         }
     }

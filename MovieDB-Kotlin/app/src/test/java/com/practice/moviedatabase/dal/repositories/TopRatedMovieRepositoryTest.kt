@@ -38,7 +38,7 @@ class TopRatedMovieRepositoryTest {
             SUT.fetchTopRatedMovies(params)
         }
 
-        coVerify (exactly = 1) {
+        coVerify(exactly = 1) {
             useCaseMock.invoke(params)
         }
     }

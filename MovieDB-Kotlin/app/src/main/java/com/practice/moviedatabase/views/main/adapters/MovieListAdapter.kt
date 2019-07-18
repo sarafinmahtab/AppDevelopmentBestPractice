@@ -7,12 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.dal.PageLoadListener
+import com.practice.moviedatabase.dal.db.Converters
 import com.practice.moviedatabase.dal.networks.ServerConstants.apiKey
 import com.practice.moviedatabase.dal.networks.ServerConstants.language
 import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
 import com.practice.moviedatabase.dal.networks.ServerConstants.sortedBy
+import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
+import com.practice.moviedatabase.utilities.getGenreFromIds
 
 
 class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -24,6 +27,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     private val movieInitialLoadHolderID = 3
 
     private var movieList: MutableList<Movie> = mutableListOf()
+    private val hashMap = LinkedHashMap<Int, String>()
 
     private lateinit var clickListener: ItemClickListener
     private lateinit var pagingListener: PageLoadListener<TopRatedMovieParams>
@@ -63,14 +67,22 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
                 val result = movieList[position]
 
-                oddViewHolder.bind(result)
+                if (result.genreIds.isNullOrEmpty()) {
+                    oddViewHolder.bind(result, context.getString(R.string.no_matched_genres))
+                } else {
+                    oddViewHolder.bind(result, getGenreFromIds(hashMap, result.genreIds!!))
+                }
             }
             holder.itemViewType == movieEvenHolderID -> {
 
                 val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
                 val result = movieList[position]
 
-                evenViewHolder.bind(result)
+                if (result.genreIds.isNullOrEmpty()) {
+                    evenViewHolder.bind(result, context.getString(R.string.no_matched_genres))
+                } else {
+                    evenViewHolder.bind(result, getGenreFromIds(hashMap, result.genreIds!!))
+                }
             }
             holder.itemViewType == movieLoadHolderID -> {
                 currentPageKey += 1
@@ -118,5 +130,12 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         this.pagingListener.loadFirstPage(
             TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
         )
+    }
+
+    fun setGenres(genres: Genres) {
+
+        for (genre in genres.genres!!) {
+            hashMap[genre.id] = genre.name
+        }
     }
 }

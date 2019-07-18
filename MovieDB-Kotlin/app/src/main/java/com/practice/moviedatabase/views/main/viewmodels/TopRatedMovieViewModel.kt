@@ -5,21 +5,20 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
-import com.practice.moviedatabase.models.Genre
+import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.launch
 
 
 class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : BaseViewModel() {
 
+    val genresLiveData = MutableLiveData<Result<Genres>>()
 
     val topRatedMovieLiveData = MediatorLiveData<Result<List<Movie>>>()
     private val topRatedMovieParams = MutableLiveData<TopRatedMovieParams>()
-
-    private val genresLiveData: MutableLiveData<List<Genre>> = MutableLiveData()
-
 
     init {
         topRatedMovieLiveData.addSource(topRatedMovieParams) {
@@ -38,6 +37,15 @@ class TopRatedMovieViewModel(private var repository: TopRatedMovieRepository) : 
         val lastParam = topRatedMovieParams.value
         if (lastParam != null) {
             refreshTopRatedMovie(lastParam)
+        }
+    }
+
+    public fun fetchGenres(params: GenreParams) {
+        uiScope.launch {
+            genresLiveData.value = Result.loading()
+
+            val result = repository.fetchGenres(params)
+            genresLiveData.value = result
         }
     }
 

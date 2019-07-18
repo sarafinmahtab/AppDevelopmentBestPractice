@@ -21,17 +21,20 @@ class MovieOddListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
     private val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
+    private val genresTextView: TextView = itemView.findViewById(R.id.movieGenreTextView)
 
     private lateinit var listener: ItemClickListener
 
     fun bind(
-        movie: Movie
+        movie: Movie,
+        genres: String
     ) {
         val formattedDate = inputDateFormat.parse(movie.releaseDate!!)
         val outputDate = outputDateFormat.format(formattedDate!!)
 
         movieTitleTextView.text = movie.title
         releasedDateTextView.text = String.format("Released : %s", outputDate)
+        genresTextView.text = genres
 
         Glide.with(itemView.context)
             .load(ServerConstants.BASE_IMAGE_URL + movie.posterPath)
@@ -58,17 +61,20 @@ class MovieEvenListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 
     private val movieTitleTextView: TextView = itemView.findViewById(R.id.movieTitleTextView)
     private val releasedDateTextView: TextView = itemView.findViewById(R.id.movieReleasedTextView)
+    private val genresTextView: TextView = itemView.findViewById(R.id.movieGenreTextView)
 
     private lateinit var listener: ItemClickListener
 
     fun bind(
-        movie: Movie
+        movie: Movie,
+        genres: String
     ) {
         val formattedDate = inputDateFormat.parse(movie.releaseDate!!)
         val outputDate = outputDateFormat.format(formattedDate!!)
 
         movieTitleTextView.text = movie.title
         releasedDateTextView.text = String.format("Released : %s", outputDate)
+        genresTextView.text = genres
 
         Glide.with(itemView.context)
             .load(ServerConstants.BASE_IMAGE_URL + movie.posterPath)

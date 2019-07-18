@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.bll.GenreMovieUseCase
 import com.practice.moviedatabase.bll.TopRatedMovieUseCase
 import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.db.DBManager
@@ -22,8 +23,10 @@ import com.practice.moviedatabase.dal.networks.ServerConstants
 import com.practice.moviedatabase.dal.networks.ServerConstants.BASE_URL
 import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
+import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.utilities.getConnectivityStatus
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
@@ -72,18 +75,46 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
 
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
-        val businessLogic = TopRatedMovieUseCase(getConnectivityStatus(), apiService, appDao)
+        val topRateMovieUseCase = TopRatedMovieUseCase(getConnectivityStatus(), apiService, appDao)
+        val genreUseCase = GenreMovieUseCase(getConnectivityStatus(), apiService, appDao)
 
         viewModel = ViewModelProviders.of(
             this,
             TopRatedViewModelFactory(
-                TopRatedMovieRepository(businessLogic)
+                TopRatedMovieRepository(topRateMovieUseCase, genreUseCase)
             )
         ).get(TopRatedMovieViewModel::class.java)
+
+        viewModel.fetchGenres(
+            GenreParams(ServerConstants.apiKey, ServerConstants.language)
+        )
+
+        viewModel.genresLiveData.observe(this@MainActivity, Observer {
+            handleGenresData(it)
+        })
+
 
         viewModel.topRatedMovieLiveData.observe(this@MainActivity, Observer {
             handleMoviesData(it)
         })
+    }
+
+    private fun handleGenresData(result: Result<Genres>) {
+        when (result.status) {
+            Result.Status.LOADING -> {
+
+            }
+
+            Result.Status.SUCCESS -> {
+                progressBar.visibility = View.GONE
+                adapter.setGenres(result.data!!)
+            }
+
+            Result.Status.ERROR -> {
+                progressBar.visibility = View.GONE
+                Toast.makeText(this, "Error fetching genres", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun loadFirstPage(params: TopRatedMovieParams) {

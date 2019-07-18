@@ -7,4 +7,5 @@
     <string name="details_view">Details View</string>
     <string name="action_switch">Details Switch</string>
     <string name="loading_more_popular_movies">Loading more popular movies…</string>
+    <string name="no_matched_genres">No Matched Genres</string>
 </resources>

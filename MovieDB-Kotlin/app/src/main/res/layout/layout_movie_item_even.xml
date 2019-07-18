@@ -27,7 +27,8 @@
                 android:id="@+id/detailsLinearLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/moviePosterImageView"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +52,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="#746464"
                     tools:text="Released : 14 May, 2019"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/movieGenreTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#746464"
+                    tools:text="Romantic, Comedy, Family"/>
 
         </LinearLayout>
 

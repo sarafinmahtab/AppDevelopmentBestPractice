@@ -21,7 +21,6 @@ import com.practice.moviedatabase.dal.networks.ApiClient
 import com.practice.moviedatabase.dal.networks.ApiService
 import com.practice.moviedatabase.dal.networks.ServerConstants
 import com.practice.moviedatabase.dal.networks.ServerConstants.BASE_URL
-import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
@@ -44,8 +43,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
     private lateinit var adapter: MovieListAdapter
 
     private var checked = false
-    private var currentPageKey = pageKey
-    private var previousPageKey = currentPageKey
+    private var currentPageKey = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +59,9 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         adapter = MovieListAdapter(this)
         adapter.setItemClickListener(this)
         adapter.setPagingListener(this)
+        adapter.setTotalPageSize(5)
 
-        val layoutManager = LinearLayoutManager(this)
-        movieListRecyclerView.layoutManager = layoutManager
+        movieListRecyclerView.layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.adapter = adapter
     }
 
@@ -75,13 +73,17 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
 
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
-        val topRateMovieUseCase = TopRatedMovieUseCase(getConnectivityStatus(), apiService, appDao)
-        val genreUseCase = GenreMovieUseCase(getConnectivityStatus(), apiService, appDao)
+
+        val repository = TopRatedMovieRepository(getConnectivityStatus(), apiService, appDao)
+
+        val topRateMovieUseCase = TopRatedMovieUseCase(repository)
+        val genreUseCase = GenreMovieUseCase(repository)
 
         viewModel = ViewModelProviders.of(
             this,
             TopRatedViewModelFactory(
-                TopRatedMovieRepository(topRateMovieUseCase, genreUseCase)
+                topRateMovieUseCase,
+                genreUseCase
             )
         ).get(TopRatedMovieViewModel::class.java)
 
@@ -92,7 +94,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         viewModel.genresLiveData.observe(this@MainActivity, Observer {
             handleGenresData(it)
         })
-
 
         viewModel.topRatedMovieLiveData.observe(this@MainActivity, Observer {
             handleMoviesData(it)
@@ -118,11 +119,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
     }
 
     override fun loadFirstPage(params: TopRatedMovieParams) {
+        currentPageKey = 1
         viewModel.setParams(params)
     }
 
     override fun loadNextPage(params: TopRatedMovieParams) {
-        previousPageKey = currentPageKey
         currentPageKey = params.page.toInt()
         viewModel.setParams(params)
     }
@@ -136,9 +137,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
             }
 
             Result.Status.SUCCESS -> {
-                progressBar.visibility = View.GONE
-
-                if (currentPageKey == previousPageKey) {
+                if (currentPageKey == 1) {
                     adapter.setTopRatedMovie(result.data!! as MutableList<Movie>)
                 } else {
                     adapter.updateTopRatedMovie(result.data!! as MutableList<Movie>)
@@ -146,7 +145,6 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
             }
 
             Result.Status.ERROR -> {
-                progressBar.visibility = View.GONE
                 Toast.makeText(this, "An Error Occurred", Toast.LENGTH_SHORT).show()
             }
         }

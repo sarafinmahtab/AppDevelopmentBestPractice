@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
 import com.practice.moviedatabase.dal.PageLoadListener
-import com.practice.moviedatabase.dal.db.Converters
 import com.practice.moviedatabase.dal.networks.ServerConstants.apiKey
 import com.practice.moviedatabase.dal.networks.ServerConstants.language
-import com.practice.moviedatabase.dal.networks.ServerConstants.pageKey
 import com.practice.moviedatabase.dal.networks.ServerConstants.sortedBy
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
@@ -20,19 +18,23 @@ import com.practice.moviedatabase.utilities.getGenreFromIds
 
 class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val movieOddHolderID: Int = 100
+    private val movieEvenHolderID: Int = 101
+    private var loaderHolderID = 102
+    private var endHolderID = 103
+    private var retryHolderID = 104
 
-    private val movieOddHolderID: Int = 0
-    private val movieEvenHolderID: Int = 1
-    private val movieLoadHolderID: Int = 2
-    private val movieInitialLoadHolderID = 3
+    private var totalPageSize = 0
+    private var currentPageKey = 1
+
+    private var requestErrorOccurred = false
 
     private var movieList: MutableList<Movie> = mutableListOf()
-    private val hashMap = LinkedHashMap<Int, String>()
+
+    private val genresHashMap = LinkedHashMap<Int, String>()
 
     private lateinit var clickListener: ItemClickListener
     private lateinit var pagingListener: PageLoadListener<TopRatedMovieParams>
-
-    private var currentPageKey = pageKey
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -43,8 +45,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             .inflate(R.layout.layout_movie_item_even, parent, false)
         val loadingView = LayoutInflater.from(context)
             .inflate(R.layout.layout_movie_loader, parent, false)
-        val initialLoadingView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_initial_movie_loading, parent, false)
+        val endView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_item_end, parent, false)
 
         return when (viewType) {
             movieOddHolderID -> MovieOddListViewHolder(oddView).apply {
@@ -53,8 +55,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
             movieEvenHolderID -> MovieEvenListViewHolder(evenView).apply {
                 setItemClickListener(clickListener)
             }
-            movieLoadHolderID -> MovieLoadingViewHolder(loadingView)
-            else -> MovieInitialLoadingViewHolder(initialLoadingView)
+            loaderHolderID -> MovieLoadingViewHolder(loadingView)
+            else -> EndLoadingViewHolder(endView)
         }
     }
 
@@ -70,7 +72,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 if (result.genreIds.isNullOrEmpty()) {
                     oddViewHolder.bind(result, context.getString(R.string.no_matched_genres))
                 } else {
-                    oddViewHolder.bind(result, getGenreFromIds(hashMap, result.genreIds!!))
+                    oddViewHolder.bind(result, getGenreFromIds(genresHashMap, result.genreIds!!))
                 }
             }
             holder.itemViewType == movieEvenHolderID -> {
@@ -81,34 +83,46 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                 if (result.genreIds.isNullOrEmpty()) {
                     evenViewHolder.bind(result, context.getString(R.string.no_matched_genres))
                 } else {
-                    evenViewHolder.bind(result, getGenreFromIds(hashMap, result.genreIds!!))
+                    evenViewHolder.bind(result, getGenreFromIds(genresHashMap, result.genreIds!!))
                 }
             }
-            holder.itemViewType == movieLoadHolderID -> {
-                currentPageKey += 1
+            holder.itemViewType == loaderHolderID -> {
                 pagingListener.loadNextPage(
-                    TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
+                    TopRatedMovieParams(apiKey, language, (currentPageKey + 1).toString(), sortedBy)
                 )
-            }
-            holder.itemViewType == movieInitialLoadHolderID -> {
-                val initLoadViewHolder: MovieInitialLoadingViewHolder = holder as MovieInitialLoadingViewHolder
-                initLoadViewHolder.load()
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
 
-        return when {
-            (position == movieList.size && movieList.size != 0) -> movieLoadHolderID
-            (position.and(1) == 1 && position != movieList.size) -> movieEvenHolderID
-            (position.and(1) == 0 && position != movieList.size) -> movieOddHolderID
-            else -> movieInitialLoadHolderID
+        return when (position) {
+            movieList.size -> {
+                when (currentPageKey) {
+                    totalPageSize -> endHolderID
+                    else -> loaderHolderID
+                }
+            }
+            else -> {
+
+                if (position.and(1) == 1) {
+                    movieEvenHolderID
+                } else {
+                    movieOddHolderID
+                }
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return movieList.size + 1
+        return when {
+            movieList.isNullOrEmpty() -> {
+                1
+            }
+            else -> {
+                movieList.size + 1
+            }
+        }
     }
 
     fun setTopRatedMovie(movies: MutableList<Movie>) {
@@ -117,8 +131,12 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     }
 
     fun updateTopRatedMovie(movies: MutableList<Movie>) {
+        currentPageKey += 1
         movieList.addAll(movies)
-        notifyDataSetChanged()
+
+        notifyItemRangeInserted(
+            movieList.size - movies.size, movies.size
+        )
     }
 
     fun setItemClickListener(listener: ItemClickListener) {
@@ -132,10 +150,14 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         )
     }
 
+    fun setTotalPageSize(totalPageSize: Int) {
+        this.totalPageSize = totalPageSize
+    }
+
     fun setGenres(genres: Genres) {
 
         for (genre in genres.genres!!) {
-            hashMap[genre.id] = genre.name
+            genresHashMap[genre.id] = genre.name
         }
     }
 }

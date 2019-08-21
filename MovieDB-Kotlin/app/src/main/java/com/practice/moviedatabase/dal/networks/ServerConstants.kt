@@ -13,7 +13,6 @@ object ServerConstants {
     const val apiKey = "6371db70ffc8e719f981e307e397452e"
     const val language = "en-US"
     const val sortedBy = "vote_average.asc"
-    const val pageKey = 1
 
     val inputDateFormat: SimpleDateFormat
         get() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

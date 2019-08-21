@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -109,3 +110,14 @@ class MovieInitialLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(it
 
 
 class MovieLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+class EndLoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    private val listLoadingStatusTextView = itemView.findViewById<AppCompatTextView>(R.id.listLoadingStatusTextView)
+
+    fun bind(
+        status: String
+    ) {
+        listLoadingStatusTextView.text = status
+    }
+}

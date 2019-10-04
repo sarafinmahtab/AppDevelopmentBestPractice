@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel
-import com.practice.moviedatabase.bll.GenreMovieUseCase
-import com.practice.moviedatabase.bll.TopRatedMovieUseCase
+import com.practice.moviedatabase.bll.GetMovieGenres
+import com.practice.moviedatabase.bll.GetTopRatedMovies
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 
 
 class TopRatedMovieViewModel(
-    private val topRatedMovieUseCase: TopRatedMovieUseCase,
-    private val genreMovieUseCase: GenreMovieUseCase
+    private val getTopRatedMovies: GetTopRatedMovies,
+    private val getMovieGenres: GetMovieGenres
 ) : BaseViewModel() {
 
     val genresLiveData = MutableLiveData<Result<Genres>>()
@@ -48,7 +48,7 @@ class TopRatedMovieViewModel(
         uiScope.launch {
             genresLiveData.value = Result.loading()
 
-            val result = genreMovieUseCase(params)
+            val result = getMovieGenres(params)
             genresLiveData.value = result
         }
     }
@@ -61,7 +61,7 @@ class TopRatedMovieViewModel(
 
             topRatedMovieLiveData.value = Result.loading()
 
-            val result = topRatedMovieUseCase(params)
+            val result = getTopRatedMovies(params)
             topRatedMovieLiveData.value = result
         }
     }

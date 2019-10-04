@@ -9,12 +9,14 @@ import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 
 class TopRatedMovieRepository(
-    private val networkAvailable: Boolean,
     private val apiService: ApiService,
     private val appDao: AppDao
 ) {
 
-    suspend fun fetchTopRatedMovies(params: TopRatedMovieParams): Result<List<Movie>> {
+    suspend fun fetchTopRatedMovies(
+        networkAvailable: Boolean,
+        params: TopRatedMovieParams
+    ): Result<List<Movie>> {
 
         return try {
 
@@ -26,7 +28,7 @@ class TopRatedMovieRepository(
                 ).await()
 
                 if (result.movies.isNullOrEmpty()) {
-                    Result.error<List<Movie>>(Exception("Movies value is Null or Empty"))
+                    Result.error<List<Movie>>(NullPointerException("Movies value is Null or Empty"))
                 } else {
                     appDao.insertMovies(result.movies!!)
                     Result.success(result.movies!!)
@@ -36,7 +38,7 @@ class TopRatedMovieRepository(
                 val movies = appDao.getMovies()
 
                 if (movies.isNullOrEmpty()) {
-                    Result.error<List<Movie>>(Exception("Movies value is Null or Empty"))
+                    Result.error<List<Movie>>(NullPointerException("Movies value is Null or Empty"))
                 } else {
                     Result.success(movies)
                 }

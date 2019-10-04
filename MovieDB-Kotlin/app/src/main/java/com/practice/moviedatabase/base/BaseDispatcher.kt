@@ -2,7 +2,7 @@ package com.practice.moviedatabase.base
 
 import kotlinx.coroutines.Dispatchers
 
-object AppDispatcher {
+object BaseDispatcher {
 
     val main = Dispatchers.Main
     val io = Dispatchers.IO

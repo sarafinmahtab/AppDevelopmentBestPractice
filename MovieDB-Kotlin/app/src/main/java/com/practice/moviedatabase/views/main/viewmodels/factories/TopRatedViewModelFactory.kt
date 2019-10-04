@@ -2,17 +2,16 @@ package com.practice.moviedatabase.views.main.viewmodels.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.practice.moviedatabase.bll.GenreMovieUseCase
-import com.practice.moviedatabase.bll.TopRatedMovieUseCase
-import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
+import com.practice.moviedatabase.bll.GetMovieGenres
+import com.practice.moviedatabase.bll.GetTopRatedMovies
 import com.practice.moviedatabase.views.main.viewmodels.TopRatedMovieViewModel
 
 class TopRatedViewModelFactory(
-    private val topRatedMovieUseCase: TopRatedMovieUseCase,
-    private val genreMovieUseCase: GenreMovieUseCase
+    private val getTopRatedMovies: GetTopRatedMovies,
+    private val getMovieGenres: GetMovieGenres
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TopRatedMovieViewModel(topRatedMovieUseCase, genreMovieUseCase) as T
+        return TopRatedMovieViewModel(getTopRatedMovies, getMovieGenres) as T
     }
 }

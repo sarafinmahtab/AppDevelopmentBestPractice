@@ -13,23 +13,21 @@ import com.practice.moviedatabase.dal.networks.ServerConstants.sortedBy
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
-import com.practice.moviedatabase.utilities.getGenreFromIds
+import com.practice.moviedatabase.helpers.getGenreFromIds
 
 
-class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MovieListAdapter(private val context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val movieOddHolderID: Int = 100
     private val movieEvenHolderID: Int = 101
     private var loaderHolderID = 102
     private var endHolderID = 103
-    private var retryHolderID = 104
 
     private var totalPageSize = 0
-    private var currentPageKey = 1
+    private var currentPage = 1
 
-    private var requestErrorOccurred = false
-
-    private var movieList: MutableList<Movie> = mutableListOf()
+    private var movieList = ArrayList<Movie>()
 
     private val genresHashMap = LinkedHashMap<Int, String>()
 
@@ -63,8 +61,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        when {
-            holder.itemViewType == movieOddHolderID -> {
+        when (holder.itemViewType) {
+            movieOddHolderID -> {
 
                 val oddViewHolder: MovieOddListViewHolder = holder as MovieOddListViewHolder
                 val result = movieList[position]
@@ -75,7 +73,8 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                     oddViewHolder.bind(result, getGenreFromIds(genresHashMap, result.genreIds!!))
                 }
             }
-            holder.itemViewType == movieEvenHolderID -> {
+
+            movieEvenHolderID -> {
 
                 val evenViewHolder: MovieEvenListViewHolder = holder as MovieEvenListViewHolder
                 val result = movieList[position]
@@ -86,19 +85,27 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
                     evenViewHolder.bind(result, getGenreFromIds(genresHashMap, result.genreIds!!))
                 }
             }
-            holder.itemViewType == loaderHolderID -> {
-                pagingListener.loadNextPage(
-                    TopRatedMovieParams(apiKey, language, (currentPageKey + 1).toString(), sortedBy)
-                )
+
+            loaderHolderID -> {
+
+                if (movieList.isNotEmpty()) {
+                    pagingListener.loadNextPage(
+                        TopRatedMovieParams(
+                            apiKey,
+                            language,
+                            (currentPage + 1).toString(),
+                            sortedBy
+                        )
+                    )
+                }
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-
         return when (position) {
             movieList.size -> {
-                when (currentPageKey) {
+                when (currentPage) {
                     totalPageSize -> endHolderID
                     else -> loaderHolderID
                 }
@@ -125,13 +132,13 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
         }
     }
 
-    fun setTopRatedMovie(movies: MutableList<Movie>) {
+    fun setTopRatedMovie(movies: ArrayList<Movie>) {
         movieList = movies
         notifyDataSetChanged()
     }
 
-    fun updateTopRatedMovie(movies: MutableList<Movie>) {
-        currentPageKey += 1
+    fun updateTopRatedMovie(movies: ArrayList<Movie>) {
+        currentPage += 1
         movieList.addAll(movies)
 
         notifyItemRangeInserted(
@@ -146,7 +153,7 @@ class MovieListAdapter(private val context: Context) : RecyclerView.Adapter<Recy
     fun setPagingListener(listener: PageLoadListener<TopRatedMovieParams>) {
         this.pagingListener = listener
         this.pagingListener.loadFirstPage(
-            TopRatedMovieParams(apiKey, language, currentPageKey.toString(), sortedBy)
+            TopRatedMovieParams(apiKey, language, currentPage.toString(), sortedBy)
         )
     }
 

@@ -8,7 +8,7 @@ import com.practice.moviedatabase.models.params.GenreParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GenreMovieUseCase(
+class GetMovieGenres(
     private val repository: TopRatedMovieRepository
 ) : UseCase<GenreParams, Result<Genres>>() {
 

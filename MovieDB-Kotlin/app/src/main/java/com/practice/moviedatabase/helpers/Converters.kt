@@ -1,4 +1,4 @@
-package com.practice.moviedatabase.utilities
+package com.practice.moviedatabase.helpers
 
 fun getGenreFromIds(hashMap: HashMap<Int, String>, genreIds: ArrayList<Int>): String {
     var genresText = ""

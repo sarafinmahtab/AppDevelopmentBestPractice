@@ -13,8 +13,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
 import com.practice.moviedatabase.base.ItemClickListener
-import com.practice.moviedatabase.bll.GenreMovieUseCase
-import com.practice.moviedatabase.bll.TopRatedMovieUseCase
+import com.practice.moviedatabase.bll.GetMovieGenres
+import com.practice.moviedatabase.bll.GetConnectivityStatus
+import com.practice.moviedatabase.bll.GetTopRatedMovies
 import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.db.DBManager
 import com.practice.moviedatabase.dal.networks.ApiClient
@@ -27,7 +28,6 @@ import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
-import com.practice.moviedatabase.utilities.getConnectivityStatus
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
 import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
 import com.practice.moviedatabase.views.main.adapters.MovieListAdapter
@@ -39,16 +39,18 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<TopRatedMovieParams> {
 
+
     private lateinit var viewModel: TopRatedMovieViewModel
     private lateinit var adapter: MovieListAdapter
 
     private var checked = false
-    private var currentPageKey = 1
+    private var currentPage = 1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        setupToolbar()
 
         viewModelObservers()
         initViews()
@@ -59,11 +61,11 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         adapter = MovieListAdapter(this)
         adapter.setItemClickListener(this)
         adapter.setPagingListener(this)
-        adapter.setTotalPageSize(5)
 
         movieListRecyclerView.layoutManager = LinearLayoutManager(this)
         movieListRecyclerView.adapter = adapter
     }
+
 
     private fun viewModelObservers() {
 
@@ -71,21 +73,27 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
          * Dependency Injected manually
          */
 
+        // Data Access Services
         val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
         val appDao = DBManager.getInstance(this.application)
 
-        val repository = TopRatedMovieRepository(getConnectivityStatus(), apiService, appDao)
+        // Repository
+        val repository = TopRatedMovieRepository(apiService, appDao)
 
-        val topRateMovieUseCase = TopRatedMovieUseCase(repository)
-        val genreUseCase = GenreMovieUseCase(repository)
+        /// Use Case
+        val getConnectivityStatus = GetConnectivityStatus(this)
+        val getTopRatedMovies = GetTopRatedMovies(getConnectivityStatus, repository)
+        val getGenres = GetMovieGenres(repository)
 
+        /// ViewModel
         viewModel = ViewModelProviders.of(
             this,
             TopRatedViewModelFactory(
-                topRateMovieUseCase,
-                genreUseCase
+                getTopRatedMovies,
+                getGenres
             )
         ).get(TopRatedMovieViewModel::class.java)
+
 
         viewModel.fetchGenres(
             GenreParams(ServerConstants.apiKey, ServerConstants.language)
@@ -99,6 +107,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
             handleMoviesData(it)
         })
     }
+
 
     private fun handleGenresData(result: Result<Genres>) {
         when (result.status) {
@@ -119,28 +128,29 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
     }
 
     override fun loadFirstPage(params: TopRatedMovieParams) {
-        currentPageKey = 1
+        currentPage = 1
         viewModel.setParams(params)
     }
 
     override fun loadNextPage(params: TopRatedMovieParams) {
-        currentPageKey = params.page.toInt()
+        currentPage = params.page.toInt()
         viewModel.setParams(params)
     }
 
     private fun handleMoviesData(result: Result<List<Movie>>) {
         when (result.status) {
             Result.Status.LOADING -> {
-//                if (currentPageKey == previousPageKey) {
-//                    progressBar.visibility = View.VISIBLE
-//                }
+
             }
 
             Result.Status.SUCCESS -> {
-                if (currentPageKey == 1) {
-                    adapter.setTopRatedMovie(result.data!! as MutableList<Movie>)
+
+                adapter.setTotalPageSize(3000)
+
+                if (currentPage == 1) {
+                    adapter.setTopRatedMovie(result.data as ArrayList<Movie>)
                 } else {
-                    adapter.updateTopRatedMovie(result.data!! as MutableList<Movie>)
+                    adapter.updateTopRatedMovie(result.data as ArrayList<Movie>)
                 }
             }
 
@@ -169,6 +179,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         intent.putExtra("vote_average", movie.voteAverage.toString())
         intent.putExtra("overview", movie.overview)
         startActivity(intent)
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+
+        toolbarTitleTextView.text = getString(R.string.app_name)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

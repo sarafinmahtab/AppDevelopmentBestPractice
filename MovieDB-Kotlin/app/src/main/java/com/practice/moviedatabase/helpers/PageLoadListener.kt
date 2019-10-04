@@ -1,4 +1,4 @@
-package com.practice.moviedatabase.utilities
+package com.practice.moviedatabase.helpers
 
 interface PageLoadListener<T> {
 

@@ -2,25 +2,20 @@ package com.practice.moviedatabase.bll
 
 import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
-import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetTopRatedMovies(
-    private val getConnectivityStatus: GetConnectivityStatus,
+class GetTopRatedMovies @Inject constructor(
     private val repository: TopRatedMovieRepository
-) : UseCase<TopRatedMovieParams, Result<List<Movie>>>() {
+) : UseCase<TopRatedMovieParams, Result<TopRatedMovie>>() {
 
-    override suspend fun execute(parameters: TopRatedMovieParams):
-            Result<List<Movie>> = withContext(Dispatchers.IO) {
+    override suspend fun execute(parameters: TopRatedMovieParams): Result<TopRatedMovie> =
+        withContext(Dispatchers.IO) {
 
-        val connection = getConnectivityStatus(Any())
-
-        return@withContext repository.fetchTopRatedMovies(
-            connection.isNetworkAvailable(),
-            parameters
-        )
-    }
+            return@withContext repository.fetchTopRatedMovies(parameters)
+        }
 }

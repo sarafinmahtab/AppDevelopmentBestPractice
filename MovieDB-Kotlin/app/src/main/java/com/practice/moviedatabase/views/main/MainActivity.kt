@@ -6,41 +6,39 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.base.ItemClickListener
-import com.practice.moviedatabase.bll.GetMovieGenres
-import com.practice.moviedatabase.bll.GetConnectivityStatus
-import com.practice.moviedatabase.bll.GetTopRatedMovies
 import com.practice.moviedatabase.dal.PageLoadListener
-import com.practice.moviedatabase.dal.db.DBManager
-import com.practice.moviedatabase.dal.networks.ApiClient
-import com.practice.moviedatabase.dal.networks.ApiService
 import com.practice.moviedatabase.dal.networks.ServerConstants
-import com.practice.moviedatabase.dal.networks.ServerConstants.BASE_URL
-import com.practice.moviedatabase.dal.repositories.TopRatedMovieRepository
+import com.practice.moviedatabase.helpers.ItemClickListener
+import com.practice.moviedatabase.helpers.viewModelProvider
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
 import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
 import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
 import com.practice.moviedatabase.views.main.adapters.MovieListAdapter
 import com.practice.moviedatabase.views.main.viewmodels.TopRatedMovieViewModel
-import com.practice.moviedatabase.views.main.viewmodels.factories.TopRatedViewModelFactory
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<TopRatedMovieParams> {
+class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
+    PageLoadListener<TopRatedMovieParams> {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: TopRatedMovieViewModel
+
     private lateinit var adapter: MovieListAdapter
 
     private var checked = false
@@ -51,6 +49,8 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupToolbar()
+
+        viewModel = viewModelProvider(viewModelFactory)
 
         viewModelObservers()
         initViews()
@@ -74,25 +74,25 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
          */
 
         // Data Access Services
-        val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
-        val appDao = DBManager.getInstance(this.application)
+//        val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
+//        val appDao = AppDatabase.getInstance(this.application)
 
         // Repository
-        val repository = TopRatedMovieRepository(apiService, appDao)
+//        val repository = TopRatedMovieRepository(apiService, appDao)
 
         /// Use Case
-        val getConnectivityStatus = GetConnectivityStatus(this)
-        val getTopRatedMovies = GetTopRatedMovies(getConnectivityStatus, repository)
-        val getGenres = GetMovieGenres(repository)
+//        val getConnectivityStatus = GetConnectivityStatus(this)
+//        val getTopRatedMovies = GetTopRatedMovies(getConnectivityStatus, repository)
+//        val getGenres = GetMovieGenres(repository)
 
         /// ViewModel
-        viewModel = ViewModelProviders.of(
-            this,
-            TopRatedViewModelFactory(
-                getTopRatedMovies,
-                getGenres
-            )
-        ).get(TopRatedMovieViewModel::class.java)
+//        viewModel = ViewModelProviders.of(
+//            this,
+//            TopRatedViewModelFactory(
+//                getTopRatedMovies,
+//                getGenres
+//            )
+//        ).get(TopRatedMovieViewModel::class.java)
 
 
         viewModel.fetchGenres(
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
         viewModel.setParams(params)
     }
 
-    private fun handleMoviesData(result: Result<List<Movie>>) {
+    private fun handleMoviesData(result: Result<TopRatedMovie>) {
         when (result.status) {
             Result.Status.LOADING -> {
 
@@ -145,12 +145,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
 
             Result.Status.SUCCESS -> {
 
-                adapter.setTotalPageSize(3000)
+                adapter.setTotalPageSize(result.data?.totalPages ?: currentPage)
 
                 if (currentPage == 1) {
-                    adapter.setTopRatedMovie(result.data as ArrayList<Movie>)
+                    adapter.setTopRatedMovie(result.data?.movies as ArrayList<Movie>)
                 } else {
-                    adapter.updateTopRatedMovie(result.data as ArrayList<Movie>)
+                    adapter.updateTopRatedMovie(result.data?.movies as ArrayList<Movie>)
                 }
             }
 
@@ -201,10 +201,12 @@ class MainActivity : AppCompatActivity(), ItemClickListener, PageLoadListener<To
             R.id.action_settings -> {
                 if (checked) {
                     checked = false
-                    item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_simple_glass, null)
+                    item.icon =
+                        ResourcesCompat.getDrawable(resources, R.drawable.ic_simple_glass, null)
                 } else {
                     checked = true
-                    item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_color_glass, null)
+                    item.icon =
+                        ResourcesCompat.getDrawable(resources, R.drawable.ic_color_glass, null)
                 }
                 true
             }

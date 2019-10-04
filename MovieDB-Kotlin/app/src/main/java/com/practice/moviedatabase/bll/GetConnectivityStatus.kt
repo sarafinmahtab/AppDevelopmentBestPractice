@@ -5,8 +5,9 @@ import com.practice.moviedatabase.base.BaseDispatcher
 import com.practice.moviedatabase.base.UseCase
 import com.practice.moviedatabase.helpers.hasAvailableConnection
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetConnectivityStatus(
+class GetConnectivityStatus @Inject constructor(
     private val context: Context
 ) : UseCase<Any, Connection>() {
 

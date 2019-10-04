@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.helpers.ItemClickListener
 import com.practice.moviedatabase.dal.networks.ServerConstants
 import com.practice.moviedatabase.dal.networks.ServerConstants.inputDateFormat
 import com.practice.moviedatabase.dal.networks.ServerConstants.outputDateFormat

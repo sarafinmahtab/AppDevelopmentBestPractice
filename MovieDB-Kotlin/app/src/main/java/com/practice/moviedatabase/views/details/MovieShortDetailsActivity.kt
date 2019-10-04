@@ -4,11 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.practice.moviedatabase.R
+import dagger.android.support.DaggerAppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_movie_short_details.*
 import kotlinx.android.synthetic.main.content_movie_short_details.*
 
-class MovieShortDetailsActivity : AppCompatActivity() {
+class MovieShortDetailsActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

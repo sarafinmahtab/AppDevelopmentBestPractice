@@ -7,13 +7,15 @@ import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.params.GenreParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GetMovieGenres(
+class GetMovieGenres @Inject constructor(
     private val repository: TopRatedMovieRepository
 ) : UseCase<GenreParams, Result<Genres>>() {
 
-    override suspend fun execute(parameters: GenreParams): Result<Genres> = withContext(Dispatchers.IO) {
+    override suspend fun execute(parameters: GenreParams): Result<Genres> =
+        withContext(Dispatchers.IO) {
 
-        return@withContext repository.fetchGenres(parameters)
-    }
+            return@withContext repository.fetchGenres(parameters)
+        }
 }

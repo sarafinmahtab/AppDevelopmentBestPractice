@@ -1,4 +1,4 @@
-package com.practice.moviedatabase.base
+package com.practice.moviedatabase.helpers
 
 import com.practice.moviedatabase.models.Movie
 

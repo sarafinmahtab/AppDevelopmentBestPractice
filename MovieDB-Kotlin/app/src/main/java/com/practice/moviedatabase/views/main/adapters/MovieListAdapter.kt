@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.moviedatabase.R
-import com.practice.moviedatabase.base.ItemClickListener
+import com.practice.moviedatabase.helpers.ItemClickListener
 import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.networks.ServerConstants.apiKey
 import com.practice.moviedatabase.dal.networks.ServerConstants.language

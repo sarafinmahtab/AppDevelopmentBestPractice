@@ -69,32 +69,6 @@ class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
 
     private fun viewModelObservers() {
 
-        /*
-         * Dependency Injected manually
-         */
-
-        // Data Access Services
-//        val apiService = ApiClient.getClient(BASE_URL).create(ApiService::class.java)
-//        val appDao = AppDatabase.getInstance(this.application)
-
-        // Repository
-//        val repository = TopRatedMovieRepository(apiService, appDao)
-
-        /// Use Case
-//        val getConnectivityStatus = GetConnectivityStatus(this)
-//        val getTopRatedMovies = GetTopRatedMovies(getConnectivityStatus, repository)
-//        val getGenres = GetMovieGenres(repository)
-
-        /// ViewModel
-//        viewModel = ViewModelProviders.of(
-//            this,
-//            TopRatedViewModelFactory(
-//                getTopRatedMovies,
-//                getGenres
-//            )
-//        ).get(TopRatedMovieViewModel::class.java)
-
-
         viewModel.fetchGenres(
             GenreParams(ServerConstants.apiKey, ServerConstants.language)
         )

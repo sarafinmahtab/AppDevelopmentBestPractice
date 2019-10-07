@@ -157,6 +157,7 @@ class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
 
         toolbarTitleTextView.text = getString(R.string.app_name)
     }

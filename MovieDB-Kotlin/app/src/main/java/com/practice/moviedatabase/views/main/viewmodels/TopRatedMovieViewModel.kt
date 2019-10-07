@@ -1,6 +1,5 @@
 package com.practice.moviedatabase.views.main.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.practice.moviedatabase.base.BaseViewModel

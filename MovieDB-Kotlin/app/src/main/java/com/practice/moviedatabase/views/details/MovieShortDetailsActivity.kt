@@ -1,11 +1,9 @@
 package com.practice.moviedatabase.views.details
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.practice.moviedatabase.R
 import dagger.android.support.DaggerAppCompatActivity
-
 import kotlinx.android.synthetic.main.activity_movie_short_details.*
 import kotlinx.android.synthetic.main.content_movie_short_details.*
 
@@ -14,9 +12,7 @@ class MovieShortDetailsActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_short_details)
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setupToolbar()
 
         initViews()
     }
@@ -28,9 +24,18 @@ class MovieShortDetailsActivity : DaggerAppCompatActivity() {
             .into(posterImageView)
 
         movieTitleTextView.text = intent.getStringExtra("title")
-        movieReleasedTextView.text = String.format("Released : %s", intent.getStringExtra("release_date"))
+        movieReleasedTextView.text =
+            String.format("Released : %s", intent.getStringExtra("release_date"))
         averageVoteTextView.text = intent.getStringExtra("vote_average")
         overviewTextView.text = intent.getStringExtra("overview")
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        toolbarTitleTextView.text = intent.getStringExtra("title")
     }
 
     override fun onSupportNavigateUp(): Boolean {

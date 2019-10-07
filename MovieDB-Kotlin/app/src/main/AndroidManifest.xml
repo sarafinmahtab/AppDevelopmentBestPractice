@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:dist="http://schemas.android.com/apk/distribution"
+        xmlns:dist="http://schemas.android.com/apk/distribution"
         xmlns:tools="http://schemas.android.com/tools"
         package="com.practice.moviedatabase">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <dist:module dist:instant="true"/>
+    <dist:module dist:instant="true" />
 
     <application
             android:name=".base.MovieDB"
@@ -25,7 +25,7 @@
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.practice.moviedatabase.views.main.MainActivity"/>
+                    android:value="com.practice.moviedatabase.views.main.MainActivity" />
         </activity>
         <activity
                 android:name=".views.details.MovieDetailsActivity"
@@ -34,16 +34,24 @@
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.practice.moviedatabase.views.main.MainActivity"/>
+                    android:value="com.practice.moviedatabase.views.main.MainActivity" />
         </activity>
         <activity
                 android:name=".views.main.MainActivity"
-                android:label="@string/app_name"
+                android:label=""
+                android:parentActivityName=".views.login.LoginActivity"
                 android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.practice.moviedatabase.views.login.LoginActivity" />
+        </activity>
+        <activity
+                android:name=".views.login.LoginActivity"
+                android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

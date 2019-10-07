@@ -2,6 +2,7 @@ package com.practice.moviedatabase.di
 
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
 import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
+import com.practice.moviedatabase.views.login.LoginActivity
 import com.practice.moviedatabase.views.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -17,6 +18,10 @@ import dagger.android.ContributesAndroidInjector
  */
 @Module
 abstract class ActivityBindingModule {
+
+    @ActivityScoped
+    @ContributesAndroidInjector()
+    internal abstract fun loginActivity(): LoginActivity
 
     @ActivityScoped
     @ContributesAndroidInjector()

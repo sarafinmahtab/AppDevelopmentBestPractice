@@ -6,8 +6,3 @@ data class TopRatedMovieParams(
     val page: String,
     val sortedBy: String
 )
-
-data class GenreParams(
-    val apiKey: String,
-    val language: String
-)

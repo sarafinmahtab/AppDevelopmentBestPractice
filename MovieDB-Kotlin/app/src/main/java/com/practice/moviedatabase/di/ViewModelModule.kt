@@ -2,6 +2,7 @@ package com.practice.moviedatabase.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.practice.moviedatabase.views.login.viewmodels.LoginViewModel
 import com.practice.moviedatabase.views.main.viewmodels.TopRatedMovieViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TopRatedMovieViewModel::class)
     abstract fun bindTopRatedMovieViewModel(viewModel: TopRatedMovieViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginViewModel::class)
+    abstract fun bindLoginViewModel(viewModel: LoginViewModel): ViewModel
 }

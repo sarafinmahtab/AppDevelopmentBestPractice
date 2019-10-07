@@ -14,12 +14,11 @@ import com.practice.moviedatabase.R
 import com.practice.moviedatabase.dal.PageLoadListener
 import com.practice.moviedatabase.dal.networks.ServerConstants
 import com.practice.moviedatabase.helpers.ItemClickListener
+import com.practice.moviedatabase.helpers.ResourceHolder
 import com.practice.moviedatabase.helpers.viewModelProvider
 import com.practice.moviedatabase.models.Genres
 import com.practice.moviedatabase.models.Movie
-import com.practice.moviedatabase.models.Result
 import com.practice.moviedatabase.models.TopRatedMovie
-import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import com.practice.moviedatabase.views.details.MovieDetailsActivity
 import com.practice.moviedatabase.views.details.MovieShortDetailsActivity
@@ -31,7 +30,8 @@ import kotlinx.android.synthetic.main.content_main.*
 import javax.inject.Inject
 
 
-class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
+class MainActivity : DaggerAppCompatActivity(),
+    ItemClickListener,
     PageLoadListener<TopRatedMovieParams> {
 
     @Inject
@@ -69,9 +69,7 @@ class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
 
     private fun viewModelObservers() {
 
-        viewModel.fetchGenres(
-            GenreParams(ServerConstants.apiKey, ServerConstants.language)
-        )
+        viewModel.fetchGenres()
 
         viewModel.genresLiveData.observe(this@MainActivity, Observer {
             handleGenresData(it)
@@ -83,18 +81,18 @@ class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
     }
 
 
-    private fun handleGenresData(result: Result<Genres>) {
-        when (result.status) {
-            Result.Status.LOADING -> {
+    private fun handleGenresData(resourceHolder: ResourceHolder<Genres>) {
+        when (resourceHolder.status) {
+            ResourceHolder.Status.LOADING -> {
 
             }
 
-            Result.Status.SUCCESS -> {
+            ResourceHolder.Status.SUCCESS -> {
                 progressBar.visibility = View.GONE
-                adapter.setGenres(result.data!!)
+                adapter.setGenres(resourceHolder.data!!)
             }
 
-            Result.Status.ERROR -> {
+            ResourceHolder.Status.ERROR -> {
                 progressBar.visibility = View.GONE
                 Toast.makeText(this, "Error fetching genres", Toast.LENGTH_LONG).show()
             }
@@ -111,24 +109,24 @@ class MainActivity : DaggerAppCompatActivity(), ItemClickListener,
         viewModel.setParams(params)
     }
 
-    private fun handleMoviesData(result: Result<TopRatedMovie>) {
-        when (result.status) {
-            Result.Status.LOADING -> {
+    private fun handleMoviesData(resourceHolder: ResourceHolder<TopRatedMovie>) {
+        when (resourceHolder.status) {
+            ResourceHolder.Status.LOADING -> {
 
             }
 
-            Result.Status.SUCCESS -> {
+            ResourceHolder.Status.SUCCESS -> {
 
-                adapter.setTotalPageSize(result.data?.totalPages ?: currentPage)
+                adapter.setTotalPageSize(resourceHolder.data?.totalPages ?: currentPage)
 
                 if (currentPage == 1) {
-                    adapter.setTopRatedMovie(result.data?.movies as ArrayList<Movie>)
+                    adapter.setTopRatedMovie(resourceHolder.data?.movies as ArrayList<Movie>)
                 } else {
-                    adapter.updateTopRatedMovie(result.data?.movies as ArrayList<Movie>)
+                    adapter.updateTopRatedMovie(resourceHolder.data?.movies as ArrayList<Movie>)
                 }
             }
 
-            Result.Status.ERROR -> {
+            ResourceHolder.Status.ERROR -> {
                 Toast.makeText(this, "An Error Occurred", Toast.LENGTH_SHORT).show()
             }
         }

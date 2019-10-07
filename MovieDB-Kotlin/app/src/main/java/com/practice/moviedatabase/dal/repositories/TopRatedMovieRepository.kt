@@ -2,8 +2,12 @@ package com.practice.moviedatabase.dal.repositories
 
 import com.practice.moviedatabase.dal.db.AppDao
 import com.practice.moviedatabase.dal.networks.ApiService
-import com.practice.moviedatabase.models.*
-import com.practice.moviedatabase.models.params.GenreParams
+import com.practice.moviedatabase.dal.networks.ServerConstants
+import com.practice.moviedatabase.helpers.ResourceHolder
+import com.practice.moviedatabase.models.Genre
+import com.practice.moviedatabase.models.Genres
+import com.practice.moviedatabase.models.Movie
+import com.practice.moviedatabase.models.TopRatedMovie
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import javax.inject.Inject
 
@@ -14,19 +18,19 @@ class TopRatedMovieRepository @Inject constructor(
 
     suspend fun fetchTopRatedMovies(
         params: TopRatedMovieParams
-    ): Result<TopRatedMovie> {
+    ): ResourceHolder<TopRatedMovie> {
 
         return try {
 
             val result = apiService.getTopRatedMoviesAsync(
-                params.apiKey, params.language,
-                params.page, params.sortedBy
+                ServerConstants.apiKey, ServerConstants.language,
+                params.page, ServerConstants.sortedBy
             ).await()
 
-            Result.success(result)
+            ResourceHolder.success(result)
 
         } catch (e: Exception) {
-            Result.error<TopRatedMovie>(e)
+            ResourceHolder.error<TopRatedMovie>(e)
         }
     }
 
@@ -38,18 +42,17 @@ class TopRatedMovieRepository @Inject constructor(
         return appDao.getMovies()
     }
 
-    suspend fun fetchGenres(params: GenreParams): Result<Genres> {
+    suspend fun fetchGenres(): ResourceHolder<Genres> {
 
         return try {
             val result = apiService.getGenresAsync(
-                params.apiKey,
-                params.language
+                ServerConstants.apiKey, ServerConstants.language
             ).await()
 
-            Result.success(result)
+            ResourceHolder.success(result)
 
         } catch (e: Exception) {
-            Result.error<Genres>(e)
+            ResourceHolder.error<Genres>(e)
         }
     }
 

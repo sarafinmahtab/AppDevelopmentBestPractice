@@ -8,9 +8,8 @@ import com.practice.moviedatabase.bll.GetMovieGenres
 import com.practice.moviedatabase.bll.GetTopRatedMovies
 import com.practice.moviedatabase.bll.isNetworkAvailable
 import com.practice.moviedatabase.models.Genres
-import com.practice.moviedatabase.models.Result
+import com.practice.moviedatabase.helpers.ResourceHolder
 import com.practice.moviedatabase.models.TopRatedMovie
-import com.practice.moviedatabase.models.params.GenreParams
 import com.practice.moviedatabase.models.params.TopRatedMovieParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,9 +23,9 @@ class TopRatedMovieViewModel @Inject constructor(
 
     val connectionLiveData = MutableLiveData<Boolean>()
 
-    val genresLiveData = MutableLiveData<Result<Genres>>()
+    val genresLiveData = MutableLiveData<ResourceHolder<Genres>>()
 
-    val topRatedMovieLiveData = MediatorLiveData<Result<TopRatedMovie>>()
+    val topRatedMovieLiveData = MediatorLiveData<ResourceHolder<TopRatedMovie>>()
     private val topRatedMovieParams = MutableLiveData<TopRatedMovieParams>()
 
     init {
@@ -57,11 +56,11 @@ class TopRatedMovieViewModel @Inject constructor(
         }
     }
 
-    public fun fetchGenres(params: GenreParams) {
+    fun fetchGenres() {
         uiScope.launch {
-            genresLiveData.value = Result.loading()
+            genresLiveData.value = ResourceHolder.loading()
 
-            val result = getMovieGenres(params)
+            val result = getMovieGenres(Any())
             genresLiveData.value = result
         }
     }
@@ -70,7 +69,7 @@ class TopRatedMovieViewModel @Inject constructor(
 
         uiScope.launch {
 
-            topRatedMovieLiveData.value = Result.loading()
+            topRatedMovieLiveData.value = ResourceHolder.loading()
 
             val result = getTopRatedMovies(params)
             topRatedMovieLiveData.value = result

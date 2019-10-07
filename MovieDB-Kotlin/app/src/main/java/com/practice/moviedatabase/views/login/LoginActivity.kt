@@ -107,6 +107,7 @@ class LoginActivity : DaggerAppCompatActivity() {
 
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     private fun showLoginFailed() {

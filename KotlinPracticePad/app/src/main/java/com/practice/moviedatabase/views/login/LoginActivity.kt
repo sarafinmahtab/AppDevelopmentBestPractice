@@ -89,11 +89,11 @@ class LoginActivity : DaggerAppCompatActivity() {
                 }
                 false
             }
+        }
 
-            login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
-            }
+        login.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            loginViewModel.login(username.text.toString(), password.text.toString())
         }
     }
 

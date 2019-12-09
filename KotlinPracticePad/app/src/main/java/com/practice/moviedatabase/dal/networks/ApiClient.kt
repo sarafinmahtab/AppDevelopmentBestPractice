@@ -1,7 +1,6 @@
 package com.practice.moviedatabase.dal.networks
 
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.practice.moviedatabase.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -67,7 +66,6 @@ object ApiClient {
             .baseUrl(url)
 //                .addConverterFactory(nullFactory)
             .addConverterFactory(factory)
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(client)
             .build()
     }

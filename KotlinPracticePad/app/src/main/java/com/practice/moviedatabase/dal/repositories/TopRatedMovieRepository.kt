@@ -25,7 +25,7 @@ class TopRatedMovieRepository @Inject constructor(
             val result = apiService.getTopRatedMoviesAsync(
                 ServerConstants.apiKey, ServerConstants.language,
                 params.page, ServerConstants.sortedBy
-            ).await()
+            )
 
             ResourceHolder.success(result)
 
@@ -47,7 +47,7 @@ class TopRatedMovieRepository @Inject constructor(
         return try {
             val result = apiService.getGenresAsync(
                 ServerConstants.apiKey, ServerConstants.language
-            ).await()
+            )
 
             ResourceHolder.success(result)
 

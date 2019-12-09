@@ -19,7 +19,7 @@ class LoginRepository @Inject constructor(
 ) {
     suspend fun getToken(): Response<RequestToken> {
         return try {
-            val result = apiService.getTokenAsync(ServerConstants.apiKey).await()
+            val result = apiService.getTokenAsync(ServerConstants.apiKey)
             if (result.success) {
                 Success(result)
             } else {
@@ -32,7 +32,7 @@ class LoginRepository @Inject constructor(
 
     suspend fun createSession(body: JsonObject): Response<RequestToken> {
         return try {
-            val result = apiService.createSessionAsync(ServerConstants.apiKey, body).await()
+            val result = apiService.createSessionAsync(ServerConstants.apiKey, body)
             if (result.success) {
                 Success(result)
             } else {
